@@ -17,7 +17,7 @@ release = '24.2'
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosectionlabel',
-    'rst2pdf.pdfbuilder',
+    'sphinx_pdf_builder',
 ]
 
 
