@@ -35,3 +35,5 @@ python:
    - requirements: docs/requirements.txt
    #- method: pip
   #   path: .
+commands:
+  - cd docs/tpi_guide && make html
