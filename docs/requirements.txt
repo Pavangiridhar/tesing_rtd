@@ -52,6 +52,7 @@ sphinxcontrib-qthelp==1.0.3
     # via sphinx
 sphinxcontrib-serializinghtml==1.1.5
     # via sphinx
-sphinxcontrib-pdfbuilder==0.5.1
 urllib3==1.26.9
     # via requests
+rst2pdf==0.97
+sphinx-pdf==0.2.0
