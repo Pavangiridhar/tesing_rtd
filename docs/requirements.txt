@@ -54,5 +54,3 @@ sphinxcontrib-serializinghtml==1.1.5
     # via sphinx
 urllib3==1.26.9
     # via requests
-rst2pdf==0.97
-sphinx-pdf==0.2.0
