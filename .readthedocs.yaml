@@ -3,14 +3,13 @@
 
 # Required
 version: 2
-
-# Build formats
+# Build all formats
 formats:
   - html
   - htmlzip
   - pdf
 
-# Set the OS, Python version, and other tools you might need
+# Set the OS, Python version and other tools you might need
 build:
   os: ubuntu-22.04
   tools:
@@ -19,43 +18,25 @@ build:
     # nodejs: "20"
     # rust: "1.70"
     # golang: "1.20"
-  
-# Build documentation in multiple directories
-# Configuration for project1
-project1:
-  sphinx:
-    configuration: docs/turbine_ug/conf.py
-  # You can configure Sphinx to use a different builder if needed
+    
+# Build documentation in the "docs/" directory with Sphinx
+sphinx:
+  configuration: docs/turbine_ug/conf.py
+  # You can configure Sphinx to use a different builder, for instance use the dirhtml builder for simpler URLs
   # builder: "dirhtml"
   # Fail on all warnings to avoid broken references
   # fail_on_warning: true
 
-# Configuration for project2
-project2:
-  sphinx:
-    configuration: docs/tpi_guide/conf.py
-  # You can configure Sphinx to use a different builder if needed
-  # builder: "dirhtml"
-  # Fail on all warnings to avoid broken references
-  # fail_on_warning: true
+# Optionally build your docs in additional formats such as PDF and ePub
+formats:
+  - pdf
+#  - epub
 
 # Optional but recommended, declare the Python requirements required
 # to build your documentation
 # See https://docs.readthedocs.io/en/stable/guides/reproducible-builds.html
 python:
-  install:
-    - requirements: docs/requirements.txt
-    # Optionally, you can use a different method for installing dependencies
-    # - method: pip
-    #   path: .
-
-# Build commands for multiple projects
-build:
-  commands:
-    - pip install -r docs/requirements.txt
-    - sphinx-build -b html docs/turbine_ug/ _build/project1/html
-    - sphinx-build -b htmlzip docs/turbine_ug/ _build/project1/htmlzip
-    - sphinx-build -b pdf docs/turbine_ug/ _build/project1/pdf
-    - sphinx-build -b html docs/tpi_guide/ _build/project2/html
-    - sphinx-build -b htmlzip docs/tpi_guide/ _build/project2/htmlzip
-    - sphinx-build -b pdf docs/tpi_guide/ _build/project2/pdf
+   install:
+   - requirements: docs/requirements.txt
+   #- method: pip
+  #   path: .
