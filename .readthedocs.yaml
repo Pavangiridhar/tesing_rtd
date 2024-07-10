@@ -35,6 +35,3 @@ python:
    - requirements: docs/requirements.txt
    #- method: pip
   #   path: .
-build:
-  steps:
-    - cd docs/turbine_ug && make html
