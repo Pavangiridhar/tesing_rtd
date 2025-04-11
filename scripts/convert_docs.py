@@ -2,12 +2,19 @@ import os
 import yaml
 import shutil
 from pathlib import Path
+import json
 
 OUTPUT_DIR = Path("output/docs/Connectors")
-SUMMARY_FILE = Path("output/docs/summary.md")
+
 
 def safe_mkdir(path):
     os.makedirs(path, exist_ok=True)
+
+def format_json_block(example_data):
+    try:
+        return json.dumps(example_data, indent=4)
+    except Exception:
+        return yaml.dump(example_data, default_flow_style=False)
 
 def convert_yaml_to_markdown(yaml_path, out_path):
     with open(yaml_path, "r", encoding="utf-8") as f:
@@ -44,12 +51,11 @@ def convert_yaml_to_markdown(yaml_path, out_path):
 
     md_lines.append("## Output\n")
 
-    # Output Example (support both 'example' and 'examples')
     example = data.get("output", {}).get("example") or data.get("output", {}).get("examples")
     if example:
         md_lines.append("### Example\n")
         md_lines.append("```json")
-        md_lines.append(yaml.dump(example, default_flow_style=False))
+        md_lines.append(format_json_block(example))
         md_lines.append("```")
 
     output = data.get("output", {}).get("properties", {})
@@ -74,7 +80,7 @@ def convert_yaml_to_markdown(yaml_path, out_path):
             desc = value.get("description", "")
             md_lines.append(f"| {key} | {dtype} | {desc} |")
 
-    # Always include Error Handling section
+    # Always include error handling section
     md_lines.append("## Error Handling\n")
     md_lines.append("### Common Error Responses\n")
     md_lines.append("| Status Code | Message | Description | Example |")
@@ -133,37 +139,10 @@ def process_connector(connector_dir):
         out_md = out_configs / f"{yml.stem}.md"
         convert_yaml_to_markdown(yml, out_md)
 
-def generate_summary_flat():
-    print("📘 Generating flat summary.md")
-    lines = ["# Connectors"]
-    for connector in sorted(OUTPUT_DIR.iterdir()):
-        if not connector.is_dir():
-            continue
-        lines.append(f"- **{connector.name}**")
-        overview = connector / "overview.md"
-        if overview.exists():
-            lines.append(f"  - [Overview](Connectors/{connector.name}/overview.md)")
-
-        configs = connector / "Configurations"
-        if configs.exists():
-            for md_file in sorted(configs.glob("*.md")):
-                lines.append(f"  - [Configurations: {md_file.stem}](Connectors/{connector.name}/Configurations/{md_file.name})")
-
-        actions = connector / "Actions"
-        if actions.exists():
-            for md_file in sorted(actions.glob("*.md")):
-                lines.append(f"  - [Actions: {md_file.stem}](Connectors/{connector.name}/Actions/{md_file.name})")
-
-    safe_mkdir(SUMMARY_FILE.parent)
-    with open(SUMMARY_FILE, "w", encoding="utf-8") as f:
-        f.write("\n".join(lines))
-    print(f"[✔] Wrote: {SUMMARY_FILE}")
-
 def main():
     for item in sorted(Path(".").iterdir()):
         if item.is_dir() and (item / "connector").exists():
             process_connector(item)
-    generate_summary_flat()
 
 if __name__ == "__main__":
     main()
