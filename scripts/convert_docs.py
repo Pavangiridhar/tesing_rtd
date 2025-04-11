@@ -96,15 +96,15 @@ def convert_yaml_to_markdown(yaml_path, out_path):
 
         md_lines.append("\n### Error Example\n")
         md_lines.append("```json")
-        md_lines.append("{""")
-        md_lines.append("  \"messages\": [")
-        md_lines.append("    {")
-        md_lines.append("      \"type\": \"ERROR\",")
-        md_lines.append("      \"text\": \"Search ID not found.\"")
+        md_lines.append("{")
+        md_lines.append('  "messages": [')
+        md_lines.append('    {')
+        md_lines.append('      "type": "ERROR",')
+        md_lines.append('      "text": "Search ID not found."')
         md_lines.append("    }")
         md_lines.append("  ],")
-        md_lines.append("  \"status_code\": 404,")
-        md_lines.append("  \"reason\": \"Not Found\"")
+        md_lines.append('  "status_code": 404,')
+        md_lines.append('  "reason": "Not Found"')
         md_lines.append("}")
         md_lines.append("```")
 
@@ -140,21 +140,23 @@ def process_connector(connector_dir):
     for yml in list(configs_dir.glob("*.yml")) + list(configs_dir.glob("*.yaml")):
         convert_yaml_to_markdown(yml, out_configs / f"{yml.stem}.md")
 
-def generate_summary():
+def generate_summary_md():
     print("📘 Generating summary.md")
+    safe_mkdir(OUTPUT_DIR)  # ensure the folder exists
+
     lines = ["# Connectors"]
-    for connector in sorted((OUTPUT_DIR).iterdir()):
+    for connector in sorted(OUTPUT_DIR.iterdir(), key=lambda x: x.name.lower()):
         if not connector.is_dir():
             continue
+
         lines.append(f"- [{connector.name}](Connectors/{connector.name}/overview.md)")
-        actions_path = connector / "Actions"
-        configs_path = connector / "Configurations"
-        if actions_path.exists():
-            for md_file in sorted(actions_path.glob("*.md")):
-                lines.append(f"  - [Actions: {md_file.stem}](Connectors/{connector.name}/Actions/{md_file.name})")
-        if configs_path.exists():
-            for md_file in sorted(configs_path.glob("*.md")):
-                lines.append(f"  - [Configurations: {md_file.stem}](Connectors/{connector.name}/Configurations/{md_file.name})")
+
+        for section in ["Configurations", "Actions"]:
+            subdir = connector / section
+            if subdir.exists():
+                for md in sorted(subdir.glob("*.md"), key=lambda x: x.name.lower()):
+                    lines.append(f"  - [{section}: {md.stem}](Connectors/{connector.name}/{section}/{md.name})")
+
     safe_mkdir(SUMMARY_FILE.parent)
     with open(SUMMARY_FILE, "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
@@ -164,7 +166,7 @@ def main():
     for item in Path(".").iterdir():
         if item.is_dir() and (item / "connector").exists():
             process_connector(item)
-    generate_summary()
+    generate_summary_md()
 
 if __name__ == "__main__":
     main()
