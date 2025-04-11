@@ -14,17 +14,11 @@ all_configs = []
 def safe_mkdir(path):
     os.makedirs(path, exist_ok=True)
 
-def write_index_file(folder: Path, title: str):
-    safe_mkdir(folder)
-    with open(folder / "_index.md", "w", encoding="utf-8") as f:
-        f.write(f"# {title}\n")
-
 def convert_yaml_to_markdown(yaml_path, out_path):
     with open(yaml_path, "r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
 
     md_lines = []
-
     title = data.get("title", yaml_path.stem)
     description = data.get("description", "")
     md_lines.append(f"# {title}\n")
@@ -99,14 +93,14 @@ def convert_yaml_to_markdown(yaml_path, out_path):
         md_lines.append("\n### Error Example\n")
         md_lines.append("```json")
         md_lines.append("{")
-        md_lines.append("  \"messages\": [")
-        md_lines.append("    {")
-        md_lines.append("      \"type\": \"ERROR\",")
-        md_lines.append("      \"text\": \"Search ID not found.\"")
+        md_lines.append('  "messages": [')
+        md_lines.append('    {')
+        md_lines.append('      "type": "ERROR",')
+        md_lines.append('      "text": "Search ID not found."')
         md_lines.append("    }")
         md_lines.append("  ],")
-        md_lines.append("  \"status_code\": 404,")
-        md_lines.append("  \"reason\": \"Not Found\"")
+        md_lines.append('  "status_code": 404,')
+        md_lines.append('  "reason": "Not Found"')
         md_lines.append("}")
         md_lines.append("```")
 
@@ -145,10 +139,6 @@ def process_connector(connector_dir):
         convert_yaml_to_markdown(yml, out_md)
         all_configs.append((connector_name, yml.stem, out_md))
 
-    write_index_file(out_root, f"{connector_name} Connector")
-    write_index_file(out_actions, "Actions")
-    write_index_file(out_configs, "Configurations")
-
 def generate_summary_md():
     print("📘 Generating summary.md")
     lines = ["# Connectors"]
@@ -162,15 +152,15 @@ def generate_summary_md():
 
         configs_dir = OUTPUT_DIR / name / "Configurations"
         if configs_dir.exists():
-            lines.append("### Configurations")
+            lines.append(f"  - **Configurations**")
             for file in sorted(configs_dir.glob("*.md")):
-                lines.append(f"- [{file.stem}](Connectors/{name}/Configurations/{file.name})")
+                lines.append(f"    - [{file.stem}](Connectors/{name}/Configurations/{file.name})")
 
         actions_dir = OUTPUT_DIR / name / "Actions"
         if actions_dir.exists():
-            lines.append("### Actions")
+            lines.append(f"  - **Actions**")
             for file in sorted(actions_dir.glob("*.md")):
-                lines.append(f"- [{file.stem}](Connectors/{name}/Actions/{file.name})")
+                lines.append(f"    - [{file.stem}](Connectors/{name}/Actions/{file.name})")
 
     safe_mkdir(SUMMARY_FILE.parent)
     with open(SUMMARY_FILE, "w", encoding="utf-8") as f:
