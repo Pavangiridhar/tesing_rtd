@@ -1,0 +1,11 @@
+# All code is owned by the connector team
+* @swimlane-connectors/eng-connectors
+
+# All documentation is owned by 
+*.md @swimlane-connectors/docs-connectors
+
+<!--
+*.md @swimlane-connectors/tech-comms
+*.yaml @swimlane-connectors/tech-comms
+doc_images/* @swimlane-connectors/tech-comms 
+-->

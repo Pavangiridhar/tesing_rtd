@@ -1,0 +1,203 @@
+schema: action/1
+title: Get Alerts
+name: get_alerts
+description: Fetches alert events from Forti Analyzer, allowing for monitoring and
+  analysis of security alerts.
+inputs:
+  type: object
+  properties:
+    json_body:
+      title: JSON Body
+      examples:
+        - id: string
+          jsonrpc: '2.0'
+          method: get
+          params:
+            - apiver: 3
+              filter: ''
+              limit: 1000
+              offset: 0
+              time-range:
+                end: '2025-04-10T06:48:48.637Z'
+                start: '2025-04-10T06:48:48.637Z'
+              timezone: string
+              url: /eventmgmt/adom/<adom-name>/alerts
+          session: string
+      type: object
+      properties:
+        id:
+          title: ID
+          description: An identifier established by the client.
+          type: string
+        jsonrpc:
+          title: JSON RPC
+          description: A string specifying the JSON-RPC protocol version.
+          enum:
+            - 2
+          examples:
+            - '2.0'
+          type: string
+        method:
+          title: Method
+          description: A string containing the method name to be invoked.
+          enum:
+            - get
+          examples:
+            - get
+          type: string
+        params:
+          title: Params
+          examples:
+            - - apiver: 3
+                filter: ''
+                limit: 1000
+                offset: 0
+                time-range:
+                  end: '2025-04-10T06:48:48.637Z'
+                  start: '2025-04-10T06:48:48.637Z'
+                timezone: string
+                url: /eventmgmt/adom/<adom-name>/alerts
+          type: array
+          items:
+            type: object
+            properties:
+              apiver:
+                title: API Version
+                description: Current API version.
+                default: 3
+                examples:
+                  - 3
+                type: number
+              filter:
+                title: Filter
+                description: Filter expression. 'event_value', 'severity', 'trigger_name',
+                  'count', 'comment' and 'flags' are supported. i.e. trigger_name='Local
+                  Device Event' and severity >= 3.
+                type: string
+              limit:
+                title: Limit
+                description: The max number of records to get (min - 1, max - 2000).
+                default: 1000
+                examples:
+                  - 1000
+                type: number
+              offset:
+                title: Offset
+                description: offset of records to get.
+                default: 0
+                examples:
+                  - 0
+                type: number
+              time-range:
+                title: Time Range
+                description: Time range for data selection.
+                examples:
+                  - end: '2025-04-10T06:48:48.637Z'
+                    start: '2025-04-10T06:48:48.637Z'
+                type: object
+                properties:
+                  end:
+                    title: End
+                    description: Ending date time. Consider it following the timezone
+                      parameter's, ADOM's or FortiAnalyzer's timezone if timezone
+                      info is not specified within time range. Format 'yyyy-MM-dd'T'HH:mm:ssZ'
+                      (RFC 3339) e.g. '2016-10-17T20:45:37-07:00 or 'yyyy-MM-dd HH:mm:ss'
+                      e.g. '2016-10-17 20:45:37'.
+                    examples:
+                      - '2025-04-10T06:48:48.637Z'
+                    type: string
+                  start:
+                    title: Start
+                    description: Starting date time. Consider it following the timezone
+                      parameter's, ADOM's or FortiAnalyzer's timezone if timezone
+                      info is not specified within time range. Format 'yyyy-MM-dd'T'HH:mm:ssZ'
+                      (RFC 3339) e.g. '2016-10-17T20:45:37-07:00 or 'yyyy-MM-dd HH:mm:ss'
+                      e.g. '2016-10-17 20:45:37'.
+                    examples:
+                      - '2025-04-10T06:48:48.637Z'
+                    type: string
+                required:
+                  - end
+                  - start
+                additionalProperties: true
+              timezone:
+                title: Timezone
+                description: The timezone index or name. Time range in request and
+                  date/time if any in response will follow this timezone.
+                type: string
+              url:
+                title: URL
+                description: The resource path to Alert Events. Example /eventmgmt/adom/<adom-name>/alerts.
+                examples:
+                  - /eventmgmt/adom/<adom-name>/alerts
+                type: string
+            required:
+              - url
+              - apiver
+        session:
+          title: Session
+          description: The cookie of an active session in FortiAnalyzer.
+          type: string
+      required: []
+      additionalProperties: true
+  required:
+    - json_body
+  additionalProperties: true
+output:
+  examples:
+    - status_code: 200
+      response_headers:
+        content-length: '140'
+        content-type: application/json
+        Date: Thu, 2 May 2024 20:37:23 GMT
+      reason: OK
+      json_body: {}
+  type: object
+  properties:
+    status_code:
+      title: Status Code
+      examples:
+        - 200
+      type: number
+    response_headers:
+      title: Response Headers
+      examples:
+        - content-length: '140'
+          content-type: application/json
+          Date: Thu, 2 May 2024 20:37:23 GMT
+      type: object
+      properties:
+        content-length:
+          title: Content Length
+          examples:
+            - '140'
+          type: string
+        content-type:
+          title: Content Type
+          examples:
+            - application/json
+          type: string
+        Date:
+          title: Date
+          examples:
+            - Thu, 2 May 2024 20:37:23 GMT
+          type: string
+      required: []
+      additionalProperties: true
+    reason:
+      title: Reason
+      examples:
+        - OK
+      type: string
+    json_body:
+      title: JSON Body
+      type: object
+      properties: {}
+      required: []
+      additionalProperties: true
+  required: []
+  additionalProperties: true
+meta:
+  endpoint: /eventmgmt/alerts
+  method: GET
+  outputType: json

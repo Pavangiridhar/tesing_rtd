@@ -1,0 +1,42 @@
+schema: asset/1
+name: asset
+title: FortiAnalyzer API Authentication
+description: 'Authenticates using username and password.'
+inputs:
+  type: object
+  properties:
+    url:
+      title: URL
+      description: A URL to the target host.
+      type: string
+    jsonrpc:
+      title: JSON RPC
+      description: Json Remote Procedure Call.
+      type: string    
+      default: 2.0
+    username:
+      title: Username
+      description: Username
+      type: string
+    password:
+      title: Password
+      description: Password
+      type: string
+      format: password
+    verify_ssl:
+      title: Verify SSL Certificates
+      description: Verify SSL certificate
+      type: boolean
+    http_proxy:
+      title: HTTP(s) Proxy
+      description: A proxy to route requests through.
+      type: string
+  required:
+    - url
+    - jsonrpc
+    - username
+    - password
+meta:
+  security:
+    type: http
+    scheme: basic

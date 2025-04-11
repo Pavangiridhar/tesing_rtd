@@ -1,0 +1,29 @@
+vendor: Forti
+product: Analyzer
+name: forti_analyzer
+schema: connector/1
+author: Swimlane
+bugs: ''
+iconImage: ../image/logo.png
+description: Automate security alert analysis and log management with forti analyzer.
+homepage: https://swimlane.com
+keywords:
+  - SIEM & Log Management
+license: AGPL-3.0
+meta:
+  imageRepository: quay.io/swimlane-connectors/forti_analyzer
+  private: false
+  publishConfig:
+    access: public
+  buildConfig:
+    template: python_311_definition
+  block_short_desc_update: false
+  block_readme_update: false
+  block_external_md_update: false
+  block_external_yml_update: false
+repository: https://github.com/swimlane-connectors/t_forti_analyzer
+title: Forti Analyzer
+version: 1.1.0
+runConfig:
+  inputs:
+    type: stdin

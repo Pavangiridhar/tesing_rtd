@@ -1,0 +1,19 @@
+name: canary
+
+on:
+  push:
+    branches:
+      - release-please-*
+    paths:
+      - 'docs/CHANGELOG.md'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+  pull-requests: write
+
+jobs:
+  connector:
+    uses: swimlane-connectors/connector-workflows/.github/workflows/canary-release.yml@main
+    secrets: inherit

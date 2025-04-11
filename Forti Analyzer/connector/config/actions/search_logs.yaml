@@ -1,0 +1,298 @@
+schema: action/1
+title: Search Logs
+name: search_logs
+description: Initiates a task to search logs in Forti Analyzer with specified parameters,
+  requiring a 'params' JSON body input.
+inputs:
+  type: object
+  properties:
+    json_body:
+      title: JSON Body
+      examples:
+        - id: string
+          jsonrpc: '2.0'
+          method: add
+          params:
+            - apiver: 3
+              case-sensitive: false
+              device:
+                - csfname: Corp_SF
+                  devid: FGT60C0000000001[root]
+                  devname: FGT-vancouver[traffic]
+              filter: ''
+              logtype: traffic
+              time-order: desc
+              time-range:
+                end: '2019-07-03T17:16:35'
+                start: '2019-07-02T17:16:35'
+              timezone: string
+              url: /logview/adom/root/logsearch
+          session: string
+      type: object
+      properties:
+        id:
+          title: ID
+          type: string
+          description: An identifier established by the client.
+        jsonrpc:
+          title: Jsonrpc
+          examples:
+            - '2.0'
+          type: string
+          description: A string specifying the JSON-RPC protocol version.
+          enum:
+            - 2.0
+        method:
+          title: Method
+          examples:
+            - add
+          type: string
+          description: A string containing the method name to be invoked.
+          enum:
+            - add
+        params:
+          title: Params
+          description: A structure that holds the parameter values.
+          examples:
+            - - apiver: 3
+                case-sensitive: false
+                device:
+                  - csfname: Corp_SF
+                    devid: FGT60C0000000001[root]
+                    devname: FGT-vancouver[traffic]
+                filter: ''
+                logtype: traffic
+                time-order: desc
+                time-range:
+                  end: '2019-07-03T17:16:35'
+                  start: '2019-07-02T17:16:35'
+                timezone: string
+                url: /logview/adom/root/logsearch
+          type: array
+          items:
+            type: object
+            properties:
+              apiver:
+                title: Apiver
+                examples:
+                  - 3
+                type: number
+                description: Current API version.
+              case-sensitive:
+                title: Case Sensitive
+                examples:
+                  - false
+                type: boolean
+                description: Case sensitivity in filter.
+                default: false
+              device:
+                title: Device
+                description: Device filter. For all devices in some type please use
+                  the All-Device ID.
+                examples:
+                  - - csfname: Corp_SF
+                      devid: FGT60C0000000001[root]
+                      devname: FGT-vancouver[traffic]
+                type: array
+                items:
+                  type: object
+                  properties:
+                    csfname:
+                      title: Csfname
+                      description: Name of security fabric. Format - csfname. e.g.
+                        'Corp_SF'
+                      examples:
+                        - Corp_SF
+                      type: string
+                    devid:
+                      title: Devid
+                      examples:
+                        - FGT60C0000000001[root]
+                      type: string
+                      description: Format - devid[vdom]. e.g. 'FGT60C0000000001[root]'.
+                      enum:
+                        - device-id[vdom]
+                        - device-id
+                        - All_FortiGate
+                        - All_FortiMail
+                        - All_FortiWeb
+                        - All_FortiManager
+                        - All_Syslog
+                        - All_FortiClient
+                        - All_FortiCache
+                        - All_FortiProxy
+                        - All_FortiAnalyzer
+                        - All_FortiSandbox
+                        - All_FortiAuthenticator
+                        - All_FortiDDoS
+                    devname:
+                      title: Devname
+                      examples:
+                        - FGT-vancouver[traffic]
+                      type: string
+                      description: Format - devname[vdom]. e.g. 'FGT-vancouver[traffic]'.
+                  required: []
+              filter:
+                title: Filter
+                type: string
+                description: Filter expression.
+              logtype:
+                title: Logtype
+                description: The name of the logtype.
+                examples:
+                  - traffic
+                type: string
+                enum:
+                  - traffic
+                  - app-ctrl
+                  - attack
+                  - content
+                  - dlp
+                  - emailfilter
+                  - event
+                  - history
+                  - virus
+                  - voip
+                  - webfilter
+                  - netscan
+                  - fct-event
+                  - fct-traffic
+                  - waf
+                  - gtp
+              time-order:
+                title: Time Order
+                examples:
+                  - desc
+                type: string
+                description: Sort result in descending or ascending order by time.
+                enum:
+                  - desc
+                  - asc
+              time-range:
+                title: Time Range
+                examples:
+                  - end: '2019-07-03T17:16:35'
+                    start: '2019-07-02T17:16:35'
+                type: object
+                description: Time range for log selection.
+                properties:
+                  end:
+                    title: End
+                    examples:
+                      - '2019-07-03T17:16:35'
+                    type: string
+                    description: Ending date time. Consider it following the timezone
+                      parameter's, ADOM's or FortiAnalyzer's timezone if timezone
+                      info is not specified within time range. Format is 'yyyy-MM-dd'T'HH:mm:ssZ'
+                      (RFC 3339) e.g. '2016-10-17T20:45:37-07:00 or 'yyyy-MM-dd HH:mm:ss'
+                      e.g. '2016-10-17 20:45:37'.
+                  start:
+                    title: Start
+                    examples:
+                      - '2019-07-02T17:16:35'
+                    type: string
+                    description: Starting date time. Consider it following the timezone
+                      parameter's, ADOM's or FortiAnalyzer's timezone if timezone
+                      info is not specified within time range. Format is 'yyyy-MM-dd'T'HH:mm:ssZ'
+                      (RFC 3339) e.g. '2016-10-17T20:45:37-07:00 or 'yyyy-MM-dd HH:mm:ss'
+                      e.g. '2016-10-17 20:45:37'.
+                required:
+                  - start
+                  - end
+                additionalProperties: true
+              timezone:
+                title: Timezone
+                type: string
+                description: The timezone index or name. Time range in request and
+                  date/time if any in response will follow this timezone.
+              url:
+                title: URL
+                description: The resource path to log Search.
+                examples:
+                  - /logview/adom/root/logsearch
+                type: string
+                default: /logview/adom/<adom-name>/logsearch
+            required:
+              - apiver
+              - device
+              - logtype
+              - time-range
+              - url
+        session:
+          title: Session
+          type: string
+          description: The cookie of an active session in FortiAnalyzer.
+      required:
+        - params
+      additionalProperties: true
+  required:
+    - json_body
+  additionalProperties: true
+output:
+  examples:
+    - status_code: 200
+      response_headers: {}
+      reason: OK
+      json_body:
+        id: string
+        jsonrpc: '2.0'
+        result:
+          tid: 0
+  type: object
+  properties:
+    status_code:
+      title: Status Code
+      examples:
+        - 200
+      type: number
+    response_headers:
+      title: Response Headers
+      examples:
+        - {}
+      type: object
+      properties: {}
+      required: []
+      additionalProperties: true
+    reason:
+      title: Reason
+      examples:
+        - OK
+      type: string
+    json_body:
+      title: JSON Body
+      examples:
+        - id: string
+          jsonrpc: '2.0'
+          result:
+            tid: 0
+      type: object
+      properties:
+        id:
+          title: ID
+          type: string
+        jsonrpc:
+          title: Jsonrpc
+          examples:
+            - '2.0'
+          type: string
+        result:
+          title: Result
+          examples:
+            - tid: 0
+          type: object
+          properties:
+            tid:
+              title: Tid
+              examples:
+                - 0
+              type: number
+          required: []
+          additionalProperties: true
+      required: []
+      additionalProperties: true
+  required: []
+  additionalProperties: true
+meta:
+  endpoint: /logview/logsearch
+  method: POST
+  outputType: json
