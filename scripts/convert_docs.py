@@ -96,15 +96,15 @@ def convert_yaml_to_markdown(yaml_path, out_path):
 
         md_lines.append("\n### Error Example\n")
         md_lines.append("```json")
-        md_lines.append("{""")
-        md_lines.append("  \"messages\": [")
-        md_lines.append("    {")
-        md_lines.append("      \"type\": \"ERROR\",")
-        md_lines.append("      \"text\": \"Search ID not found.\"")
+        md_lines.append("{")
+        md_lines.append('  "messages": [')
+        md_lines.append('    {')
+        md_lines.append('      "type": "ERROR",')
+        md_lines.append('      "text": "Search ID not found."')
         md_lines.append("    }")
         md_lines.append("  ],")
-        md_lines.append("  \"status_code\": 404,")
-        md_lines.append("  \"reason\": \"Not Found\"")
+        md_lines.append('  "status_code": 404,')
+        md_lines.append('  "reason": "Not Found"')
         md_lines.append("}")
         md_lines.append("```")
 
@@ -141,44 +141,32 @@ def process_connector(connector_dir):
         convert_yaml_to_markdown(yml, out_configs / f"{yml.stem}.md")
 
 def generate_summary_md():
-    summary_lines = ["# Summary\n"]
-    connectors_path = OUTPUT_DIR
+    print("📘 Generating summary.md")
+    safe_mkdir(OUTPUT_DIR)  # ensure the folder exists
 
-    connector_dirs = sorted([d for d in connectors_path.iterdir() if d.is_dir()], key=lambda x: x.name.lower())
+    lines = ["# Connectors"]
+    for connector in sorted(OUTPUT_DIR.iterdir(), key=lambda x: x.name.lower()):
+        if not connector.is_dir():
+            continue
 
-    for connector in connector_dirs:
-        summary_lines.append(f"- [{connector.name}](Connectors/{connector.name}/overview.md)")
-        
-        # Configurations
-        configs_path = connector / "Configurations"
-        if configs_path.exists():
-            config_files = sorted(configs_path.glob("*.md"))
-            if config_files:
-                summary_lines.append(f"  - Configurations")
-                for f in config_files:
-                    summary_lines.append(f"    - [{f.stem}](Connectors/{connector.name}/Configurations/{f.name})")
-        
-        # Actions
-        actions_path = connector / "Actions"
-        if actions_path.exists():
-            action_files = sorted(actions_path.glob("*.md"))
-            if action_files:
-                summary_lines.append(f"  - Actions")
-                for f in action_files:
-                    summary_lines.append(f"    - [{f.stem}](Connectors/{connector.name}/Actions/{f.name})")
+        lines.append(f"- [{connector.name}](Connectors/{connector.name}/overview.md)")
 
-    summary_path = OUTPUT_DIR.parent / "summary.md"
-    with open(summary_path, "w", encoding="utf-8") as f:
-        f.write("\n".join(summary_lines))
-    print(f"[✔] Wrote: {summary_path}")
+        for section in ["Configurations", "Actions"]:
+            subdir = connector / section
+            if subdir.exists():
+                for md in sorted(subdir.glob("*.md"), key=lambda x: x.name.lower()):
+                    lines.append(f"  - [{section}: {md.stem}](Connectors/{connector.name}/{section}/{md.name})")
 
+    safe_mkdir(SUMMARY_FILE.parent)
+    with open(SUMMARY_FILE, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+    print(f"[✔] Wrote: {SUMMARY_FILE}")
 
 def main():
     for item in Path(".").iterdir():
         if item.is_dir() and (item / "connector").exists():
             process_connector(item)
-    generate_summary()
+    generate_summary_md()
 
 if __name__ == "__main__":
     main()
-    generate_summary_md()
