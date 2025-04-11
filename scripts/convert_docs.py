@@ -108,9 +108,16 @@ def process_connector(connector_dir):
 
 
 def main():
+    found_any = False
     for item in Path(".").iterdir():
-        if item.is_dir() and (item / "connector").exists():
-            process_connector(item)
+        if item.is_dir():
+            print(f"Checking {item}")
+            if (item / "connector").exists():
+                print(f"Processing connector: {item}")
+                process_connector(item)
+                found_any = True
+    if not found_any:
+        print("No valid connector directories found.")
 
 if __name__ == "__main__":
     main()
