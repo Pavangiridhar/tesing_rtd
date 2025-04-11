@@ -140,25 +140,38 @@ def process_connector(connector_dir):
     for yml in list(configs_dir.glob("*.yml")) + list(configs_dir.glob("*.yaml")):
         convert_yaml_to_markdown(yml, out_configs / f"{yml.stem}.md")
 
-def generate_summary():
-    print("📘 Generating summary.md")
-    lines = ["# Connectors"]
-    for connector in sorted((OUTPUT_DIR).iterdir()):
-        if not connector.is_dir():
-            continue
-        lines.append(f"- [{connector.name}](Connectors/{connector.name}/overview.md)")
-        actions_path = connector / "Actions"
+def generate_summary_md():
+    summary_lines = ["# Summary\n"]
+    connectors_path = OUTPUT_DIR
+
+    connector_dirs = sorted([d for d in connectors_path.iterdir() if d.is_dir()], key=lambda x: x.name.lower())
+
+    for connector in connector_dirs:
+        summary_lines.append(f"- [{connector.name}](Connectors/{connector.name}/overview.md)")
+        
+        # Configurations
         configs_path = connector / "Configurations"
-        if actions_path.exists():
-            for md_file in sorted(actions_path.glob("*.md")):
-                lines.append(f"  - [Actions: {md_file.stem}](Connectors/{connector.name}/Actions/{md_file.name})")
         if configs_path.exists():
-            for md_file in sorted(configs_path.glob("*.md")):
-                lines.append(f"  - [Configurations: {md_file.stem}](Connectors/{connector.name}/Configurations/{md_file.name})")
-    safe_mkdir(SUMMARY_FILE.parent)
-    with open(SUMMARY_FILE, "w", encoding="utf-8") as f:
-        f.write("\n".join(lines))
-    print(f"[✔] Wrote: {SUMMARY_FILE}")
+            config_files = sorted(configs_path.glob("*.md"))
+            if config_files:
+                summary_lines.append(f"  - Configurations")
+                for f in config_files:
+                    summary_lines.append(f"    - [{f.stem}](Connectors/{connector.name}/Configurations/{f.name})")
+        
+        # Actions
+        actions_path = connector / "Actions"
+        if actions_path.exists():
+            action_files = sorted(actions_path.glob("*.md"))
+            if action_files:
+                summary_lines.append(f"  - Actions")
+                for f in action_files:
+                    summary_lines.append(f"    - [{f.stem}](Connectors/{connector.name}/Actions/{f.name})")
+
+    summary_path = OUTPUT_DIR.parent / "summary.md"
+    with open(summary_path, "w", encoding="utf-8") as f:
+        f.write("\n".join(summary_lines))
+    print(f"[✔] Wrote: {summary_path}")
+
 
 def main():
     for item in Path(".").iterdir():
@@ -168,3 +181,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    generate_summary_md()
