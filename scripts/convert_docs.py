@@ -102,14 +102,15 @@ def process_connector(connector_dir):
     safe_mkdir(out_actions)
     safe_mkdir(out_configs)
 
-    for yml in actions_dir.glob("*.yml"):
-        out_file = out_actions / f"{yml.stem}.md"
-        convert_yaml_to_markdown(yml, out_file)
+    for yml in list(actions_dir.glob("*.yml")) + list(actions_dir.glob("*.yaml")):
+    print(f"[→] Found action YAML: {yml}")
+    out_file = out_actions / f"{yml.stem}.md"
+    convert_yaml_to_markdown(yml, out_file)
 
-    for yml in configs_dir.glob("*.yml"):
-        out_file = out_configs / f"{yml.stem}.md"
-        convert_yaml_to_markdown(yml, out_file)
-
+    for yml in list(assets_dir.glob("*.yml")) + list(assets_dir.glob("*.yaml")):
+    print(f"[→] Found config YAML: {yml}")
+    out_file = out_configs / f"{yml.stem}.md"
+    convert_yaml_to_markdown(yml, out_file)
 
 def main():
     root = Path(".")
