@@ -55,44 +55,52 @@ def convert_yaml_to_markdown(yaml_path, out_path):
     md_lines.append("## Output\n")
 
     example = data.get("output", {}).get("examples") or data.get("output", {}).get("example")
-    if isinstance(example, dict) and len(example) > 0:
-        truncated_example = {k: example[k] for k in list(example)[:3]}
+    if example:
         md_lines.append("### Example\n")
         md_lines.append("```json")
-        md_lines.append(json.dumps(truncated_example, indent=2))
+        try:
+            md_lines.append(json.dumps(example, indent=2))
+        except TypeError:
+            md_lines.append(str(example))
         md_lines.append("```")
 
     output = data.get("output", {}).get("properties", {})
     if output:
-        md_lines.append("### Output Parameters\n")
-        has_description = any(output[key].get("description") for key in output if key != "response_headers")
-        if has_description:
-            md_lines.append("| Name | Type | Description |")
-            md_lines.append("|------|------|-------------|")
-            for key, value in output.items():
-                if key == "response_headers":
-                    continue
+        output_fields = [key for key in output if key != "response_headers"]
+        if output_fields:
+            has_description = any(output[key].get("description") for key in output_fields)
+            md_lines.append("### Output Parameters\n")
+            if has_description:
+                md_lines.append("| Name | Type | Description |")
+                md_lines.append("|------|------|-------------|")
+                for key in output_fields:
+                    dtype = output[key].get("type", "")
+                    desc = output[key].get("description", "")
+                    md_lines.append(f"| {key} | {dtype} | {desc} |")
+            else:
+                md_lines.append("| Name | Type |")
+                md_lines.append("|------|------|")
+                for key in output_fields:
+                    dtype = output[key].get("type", "")
+                    md_lines.append(f"| {key} | {dtype} |")
+
+    headers = output.get("response_headers", {}).get("properties", {})
+    if headers:
+        has_desc = any(headers[key].get("description") for key in headers)
+        md_lines.append("## Response Headers\n")
+        if has_desc:
+            md_lines.append("| Header | Type | Description |")
+            md_lines.append("|--------|------|-------------|")
+            for key, value in headers.items():
                 dtype = value.get("type", "")
                 desc = value.get("description", "")
                 md_lines.append(f"| {key} | {dtype} | {desc} |")
         else:
-            md_lines.append("| Name | Type |")
-            md_lines.append("|------|------|")
-            for key, value in output.items():
-                if key == "response_headers":
-                    continue
+            md_lines.append("| Header | Type |")
+            md_lines.append("|--------|------|")
+            for key, value in headers.items():
                 dtype = value.get("type", "")
                 md_lines.append(f"| {key} | {dtype} |")
-
-    headers = output.get("response_headers", {}).get("properties", {})
-    if headers:
-        md_lines.append("## Response Headers\n")
-        md_lines.append("| Header | Type | Description |")
-        md_lines.append("|--------|------|-------------|")
-        for key, value in headers.items():
-            dtype = value.get("type", "")
-            desc = value.get("description", "")
-            md_lines.append(f"| {key} | {dtype} | {desc} |")
 
     json_body = output.get("json_body", {}).get("properties", {})
     messages = json_body.get("messages", {}).get("items", {}).get("properties", {})
