@@ -15,19 +15,18 @@ def title_case(s):
 
 
 def convert_yaml_to_markdown(yaml_path, out_path):
+    print(f"🔄 Converting: {yaml_path} -> {out_path}")
     with open(yaml_path, "r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
 
     md_lines = []
 
-    # Overview
     title = data.get("title", yaml_path.stem)
     desc = data.get("description", "")
     md_lines.append(f"# {title}\n")
     if desc:
         md_lines.append(f"**Description**: {desc}\n")
 
-    # Inputs
     inputs = data.get("inputs", {}).get("properties", {})
     required = data.get("inputs", {}).get("required", [])
     if inputs:
@@ -40,7 +39,6 @@ def convert_yaml_to_markdown(yaml_path, out_path):
             is_required = "Yes" if key in required else "No"
             md_lines.append(f"| {key} | {dtype} | {desc} | {is_required} |")
 
-    # Output example
     example = data.get("output", {}).get("example")
     if example:
         md_lines.append("\n## Output Example\n")
@@ -48,7 +46,6 @@ def convert_yaml_to_markdown(yaml_path, out_path):
         md_lines.append(yaml.dump(example, default_flow_style=False))
         md_lines.append("```\n")
 
-    # Output parameters
     output = data.get("output", {}).get("properties", {})
     if output:
         md_lines.append("\n## Output Parameters\n")
@@ -59,8 +56,7 @@ def convert_yaml_to_markdown(yaml_path, out_path):
             desc = value.get("description", "")
             md_lines.append(f"| {key} | {dtype} | {desc} |")
 
-    # Response headers
-    headers = data.get("output", {}).get("properties", {}).get("response_headers", {}).get("properties", {})
+    headers = output.get("response_headers", {}).get("properties", {})
     if headers:
         md_lines.append("\n## Response Headers\n")
         md_lines.append("| Header | Type | Description |")
@@ -70,12 +66,10 @@ def convert_yaml_to_markdown(yaml_path, out_path):
             desc = value.get("description", "")
             md_lines.append(f"| {key} | {dtype} | {desc} |")
 
-    # Error handling
-    if data.get("output", {}).get("properties", {}).get("json_body", {}).get("properties", {}).get("messages"):
+    if output.get("json_body", {}).get("properties", {}).get("messages"):
         md_lines.append("\n## Error Handling\n")
         md_lines.append("The response may include error messages under the `messages` field in the JSON body.")
 
-    # Write to file
     with open(out_path, "w", encoding="utf-8") as f:
         f.write("\n".join(md_lines))
 
@@ -83,14 +77,16 @@ def convert_yaml_to_markdown(yaml_path, out_path):
 def process_connector(connector_dir):
     connector_name = Path(connector_dir).name
     out_root = OUTPUT_DIR / connector_name
-    overview_src = Path(connector_dir) / "docs" / "README.md"
+    print(f"\n📦 Processing connector: {connector_name}")
 
-    # Copy overview.md
+    overview_src = Path(connector_dir) / "docs" / "README.md"
     if overview_src.exists():
+        print("📄 Copying overview.md")
         safe_mkdir(out_root)
         shutil.copy(overview_src, out_root / "overview.md")
+    else:
+        print("⚠️ overview.md not found.")
 
-    # Create Actions and Configurations folders
     config_dir = Path(connector_dir) / "connector" / "config"
     actions_dir = config_dir / "actions"
     assets_dir = config_dir / "assets"
@@ -100,11 +96,21 @@ def process_connector(connector_dir):
     safe_mkdir(out_actions)
     safe_mkdir(out_configs)
 
-    for yml in actions_dir.glob("*.yml"):
-        convert_yaml_to_markdown(yml, out_actions / f"{yml.stem}.md")
+    print(f"📁 Looking for actions in {actions_dir}")
+    if actions_dir.exists():
+        for yml in actions_dir.glob("*.yml"):
+            print(f"  ✅ Found action: {yml.name}")
+            convert_yaml_to_markdown(yml, out_actions / f"{yml.stem}.md")
+    else:
+        print("❌ Actions directory not found.")
 
-    for yml in assets_dir.glob("*.yml"):
-        convert_yaml_to_markdown(yml, out_configs / f"{yml.stem}.md")
+    print(f"📁 Looking for configurations in {assets_dir}")
+    if assets_dir.exists():
+        for yml in assets_dir.glob("*.yml"):
+            print(f"  ✅ Found config: {yml.name}")
+            convert_yaml_to_markdown(yml, out_configs / f"{yml.stem}.md")
+    else:
+        print("❌ Configurations directory not found.")
 
 
 def main():
