@@ -4,11 +4,10 @@ import shutil
 from pathlib import Path
 
 OUTPUT_DIR = Path("output/docs/Connectors")
-
+SUMMARY_FILE = Path("output/docs/summary.md")
 
 def safe_mkdir(path):
     os.makedirs(path, exist_ok=True)
-
 
 def convert_yaml_to_markdown(yaml_path, out_path):
     with open(yaml_path, "r", encoding="utf-8") as f:
@@ -106,7 +105,6 @@ def convert_yaml_to_markdown(yaml_path, out_path):
         f.write("\n".join(md_lines))
     print(f"[✔] Wrote: {out_path}")
 
-
 def process_connector(connector_dir):
     connector_name = Path(connector_dir).name
     print(f"🔧 Processing connector: {connector_name}")
@@ -136,12 +134,37 @@ def process_connector(connector_dir):
         out_md = out_configs / f"{yml.stem}.md"
         convert_yaml_to_markdown(yml, out_md)
 
+def generate_summary_flat():
+    print("📘 Generating flat summary.md")
+    lines = ["# Connectors"]
+    for connector in sorted(OUTPUT_DIR.iterdir()):
+        if not connector.is_dir():
+            continue
+        lines.append(f"- **{connector.name}**")
+        overview = connector / "overview.md"
+        if overview.exists():
+            lines.append(f"  - [Overview](Connectors/{connector.name}/overview.md)")
+
+        configs = connector / "Configurations"
+        if configs.exists():
+            for md_file in sorted(configs.glob("*.md")):
+                lines.append(f"  - [Configurations: {md_file.stem}](Connectors/{connector.name}/Configurations/{md_file.name})")
+
+        actions = connector / "Actions"
+        if actions.exists():
+            for md_file in sorted(actions.glob("*.md")):
+                lines.append(f"  - [Actions: {md_file.stem}](Connectors/{connector.name}/Actions/{md_file.name})")
+
+    safe_mkdir(SUMMARY_FILE.parent)
+    with open(SUMMARY_FILE, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+    print(f"[✔] Wrote: {SUMMARY_FILE}")
 
 def main():
     for item in sorted(Path(".").iterdir()):
         if item.is_dir() and (item / "connector").exists():
             process_connector(item)
-
+    generate_summary_flat()
 
 if __name__ == "__main__":
     main()
