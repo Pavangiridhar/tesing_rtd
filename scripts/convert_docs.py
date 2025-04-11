@@ -11,7 +11,7 @@ def safe_mkdir(path):
 
 
 def title_case(s):
-    return s[:1].upper() + s[1:] if s else s
+    return s[0].upper() + s[1:] if s else s
 
 
 def convert_yaml_to_markdown(yaml_path, out_path):
@@ -21,73 +21,97 @@ def convert_yaml_to_markdown(yaml_path, out_path):
     md_lines = []
 
     # Overview
-    title = data.get("title", "Untitled")
+    title = data.get("title", yaml_path.stem)
     desc = data.get("description", "")
     md_lines.append(f"# {title}\n")
-    md_lines.append(f"**Description**: {desc}\n")
+    if desc:
+        md_lines.append(f"**Description**: {desc}\n")
 
     # Inputs
     inputs = data.get("inputs", {}).get("properties", {})
     required = data.get("inputs", {}).get("required", [])
     if inputs:
         md_lines.append("## Inputs\n")
-        md_lines.append("| Name | Type | Description | Required |\n|------|------|-------------|----------|")
+        md_lines.append("| Name | Type | Description | Required |")
+        md_lines.append("|------|------|-------------|----------|")
         for key, value in inputs.items():
             dtype = value.get("type", "")
             desc = value.get("description", "")
             is_required = "Yes" if key in required else "No"
             md_lines.append(f"| {key} | {dtype} | {desc} | {is_required} |")
 
-    # Outputs
+    # Output example
+    example = data.get("output", {}).get("example")
+    if example:
+        md_lines.append("\n## Output Example\n")
+        md_lines.append("```json")
+        md_lines.append(yaml.dump(example, default_flow_style=False))
+        md_lines.append("```\n")
+
+    # Output parameters
     output = data.get("output", {}).get("properties", {})
     if output:
         md_lines.append("\n## Output Parameters\n")
-        md_lines.append("| Name | Type | Description |\n|------|------|-------------|")
+        md_lines.append("| Name | Type | Description |")
+        md_lines.append("|------|------|-------------|")
         for key, value in output.items():
             dtype = value.get("type", "")
             desc = value.get("description", "")
             md_lines.append(f"| {key} | {dtype} | {desc} |")
 
-    # Write file
+    # Response headers
+    headers = data.get("output", {}).get("properties", {}).get("response_headers", {}).get("properties", {})
+    if headers:
+        md_lines.append("\n## Response Headers\n")
+        md_lines.append("| Header | Type | Description |")
+        md_lines.append("|--------|------|-------------|")
+        for key, value in headers.items():
+            dtype = value.get("type", "")
+            desc = value.get("description", "")
+            md_lines.append(f"| {key} | {dtype} | {desc} |")
+
+    # Error handling
+    if data.get("output", {}).get("properties", {}).get("json_body", {}).get("properties", {}).get("messages"):
+        md_lines.append("\n## Error Handling\n")
+        md_lines.append("The response may include error messages under the `messages` field in the JSON body.")
+
+    # Write to file
     with open(out_path, "w", encoding="utf-8") as f:
         f.write("\n".join(md_lines))
 
 
 def process_connector(connector_dir):
-    name = Path(connector_dir).name
-    formatted_name = name.replace("t_", "")
-    out_root = OUTPUT_DIR / formatted_name
-
+    connector_name = Path(connector_dir).name
+    out_root = OUTPUT_DIR / connector_name
     overview_src = Path(connector_dir) / "docs" / "README.md"
-    if overview_src.exists():
-        overview_dest = out_root / "overview.md"
-        safe_mkdir(out_root)
-        shutil.copy(overview_src, overview_dest)
 
-    # Configurations
+    # Copy overview.md
+    if overview_src.exists():
+        safe_mkdir(out_root)
+        shutil.copy(overview_src, out_root / "overview.md")
+
+    # Create Actions and Configurations folders
     config_dir = Path(connector_dir) / "connector" / "config"
     actions_dir = config_dir / "actions"
     assets_dir = config_dir / "assets"
 
     out_actions = out_root / "Actions"
-    out_assets = out_root / "Configurations"
+    out_configs = out_root / "Configurations"
     safe_mkdir(out_actions)
-    safe_mkdir(out_assets)
+    safe_mkdir(out_configs)
 
-    for yml_file in actions_dir.glob("*.yml"):
-        out_file = out_actions / (yml_file.stem + ".md")
-        convert_yaml_to_markdown(yml_file, out_file)
+    for yml in actions_dir.glob("*.yml"):
+        convert_yaml_to_markdown(yml, out_actions / f"{yml.stem}.md")
 
-    for yml_file in assets_dir.glob("*.yml"):
-        out_file = out_assets / (yml_file.stem + ".md")
-        convert_yaml_to_markdown(yml_file, out_file)
+    for yml in assets_dir.glob("*.yml"):
+        convert_yaml_to_markdown(yml, out_configs / f"{yml.stem}.md")
 
 
 def main():
-    connectors_root = Path(".")
-    for item in connectors_root.iterdir():
+    for item in Path(".").iterdir():
         if item.is_dir() and (item / "connector").exists():
             process_connector(item)
 
 
-main()
+if __name__ == "__main__":
+    main()
