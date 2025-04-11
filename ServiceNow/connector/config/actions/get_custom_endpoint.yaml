@@ -1,0 +1,66 @@
+schema: action/1
+title: Get Custom Endpoint
+name: get_custom_endpoint
+description: Retrieves data from a specified ServiceNow custom endpoint using the
+  'custom_endpoint' path parameter.
+inputs:
+  type: object
+  properties:
+    path_parameters:
+      title: Path Parameters
+      examples:
+        - custom_endpoint: table/incident
+      type: object
+      properties:
+        custom_endpoint:
+          title: Custom Endpoint
+          examples:
+            - table/incident
+          type: string
+      required:
+        - custom_endpoint
+      additionalProperties: true
+    parameters:
+      title: Parameters
+      examples:
+        - display_value: true
+          sysparm_limit: 1
+      type: object
+      properties:
+        display_value:
+          title: Display Value
+          examples:
+            - true
+          type: boolean
+        sysparm_limit:
+          title: Sysparm Limit
+          examples:
+            - 1
+          type: number
+      required: []
+      additionalProperties: true
+    json_body:
+      type: object
+      description: JSON Body
+      properties: {}
+      required: []
+      additionalProperties: true
+    data_body:
+      type: object
+      description: Data Body
+      properties: {}
+      required: []
+      additionalProperties: true
+  required:
+    - path_parameters
+  additionalProperties: true
+output:
+  examples:
+    - {}
+  type: object
+  properties: {}
+  required: []
+  additionalProperties: true
+meta:
+  endpoint: api/now/v2/{{custom_endpoint}}
+  method: GET

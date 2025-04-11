@@ -1,0 +1,26 @@
+venv/
+*.swimbundle
+output/
+dist/
+.idea
+# exclude all data files except asset config and template.
+!data/
+data/*
+!data/assetConfig.json
+!data/asset.json.txt
+
+.DS_Store
+*.egg-info/
+__pycache__/
+*.py[cod]
+*$py.class
+
+.czrc
+.python-version
+
+test_output/
+
+Dockerfile
+dockerImages/
+
+*.tar.gz

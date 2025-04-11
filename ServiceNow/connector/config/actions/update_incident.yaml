@@ -1,0 +1,170 @@
+schema: action/1
+title: Update Incident
+name: update_incident
+description: Updates an existing incident in ServiceNow using the unique sys_id and
+  additional data provided in a JSON body.
+inputs:
+  type: object
+  properties:
+    path_parameters:
+      title: Path Parameters
+      type: object
+      properties:
+        sys_id:
+          title: Sys ID
+          examples:
+            - 1c741bd70b2322007518478d83673af3
+          type: string
+          description: Sys_id of the record to be updated.
+      required:
+        - sys_id
+      additionalProperties: true
+    json_body:
+      title: JSON Body
+      type: object
+      properties:
+        sysparm_display_value:
+          title: Sysparm Display Value
+          description: Determines the type of data returned, either the actual values
+            from the database or the display values of the fields.
+          type: string
+          default: 'false'
+          enum:
+            - 'false'
+            - 'true'
+            - all
+        sysparm_fields:
+          title: System Parameter Fields
+          description: Comma-separated list of fields to return in the response.
+          type: string
+        sysparm_input_display_value:
+          title: Sysparm Input Display Value
+          description: Flag that indicates whether to set field values using the display
+            value or the actual value.
+          type: boolean
+          default: false
+        sysparm_query_no_domain:
+          title: System Parameter Query No Domain
+          description: Flag that indicates whether to restrict the record search to
+            only the domains for which the logged in user is configured.
+          type: boolean
+          default: false
+        sysparm_view:
+          title: System Parameter View
+          description: If you also specify the sysparm_fields parameter, it takes
+            precedent.
+          type: string
+          default: string
+          enum:
+            - destop
+            - mobile
+            - both
+      required: []
+      additionalProperties: true
+  required:
+    - path_parameters
+    - json_body
+  additionalProperties: true
+output:
+  examples:
+    - status_code: 200
+      response_headers:
+        Set-Cookie: JSESSIONID=CEA60557841F8F77A8AB86E60B05F18D; Path=/; HttpOnly;Secure,
+          BIGipServerpool_dev60827=999184138.46398.0000; path=/; Httponly; Secure
+        Server-Timing: wall;dur=0, sem_wait;dur=0, sesh_wait;dur=0, app_cpu;dur=0,
+          db;dur=1, acl;dur=0, br;dur=null, ui_action;dur=0, cache_build;dur=0, scripting;dur=0
+        Content-Security-Policy: frame-ancestors 'self' teams.microsoft.com *.teams.microsoft.com
+        Content-Length: '0'
+        Date: Mon, 07 Aug 2023 11:12:15 GMT
+        Keep-Alive: timeout=70
+        Connection: keep-alive
+        Server: ServiceNow
+        Strict-Transport-Security: max-age=63072000; includeSubDomains
+      reason: OK
+      response_text: ''
+  type: object
+  properties:
+    status_code:
+      title: Status Code
+      examples:
+        - 200
+      type: number
+    response_headers:
+      title: Response Headers
+      examples:
+        - Set-Cookie: JSESSIONID=CEA60557841F8F77A8AB86E60B05F18D; Path=/; HttpOnly;Secure,
+            BIGipServerpool_dev60827=999184138.46398.0000; path=/; Httponly; Secure
+          Server-Timing: wall;dur=0, sem_wait;dur=0, sesh_wait;dur=0, app_cpu;dur=0,
+            db;dur=1, acl;dur=0, br;dur=null, ui_action;dur=0, cache_build;dur=0,
+            scripting;dur=0
+          Content-Security-Policy: frame-ancestors 'self' teams.microsoft.com *.teams.microsoft.com
+          Content-Length: '0'
+          Date: Mon, 07 Aug 2023 11:12:15 GMT
+          Keep-Alive: timeout=70
+          Connection: keep-alive
+          Server: ServiceNow
+          Strict-Transport-Security: max-age=63072000; includeSubDomains
+      type: object
+      properties:
+        Set-Cookie:
+          title: Set-Cookie
+          examples:
+            - JSESSIONID=CEA60557841F8F77A8AB86E60B05F18D; Path=/; HttpOnly;Secure,
+              BIGipServerpool_dev60827=999184138.46398.0000; path=/; Httponly; Secure
+          type: string
+        Server-Timing:
+          title: Server-Timing
+          examples:
+            - wall;dur=0, sem_wait;dur=0, sesh_wait;dur=0, app_cpu;dur=0, db;dur=1,
+              acl;dur=0, br;dur=null, ui_action;dur=0, cache_build;dur=0, scripting;dur=0
+          type: string
+        Content-Security-Policy:
+          title: Content-Security-Policy
+          examples:
+            - frame-ancestors 'self' teams.microsoft.com *.teams.microsoft.com
+          type: string
+        Content-Length:
+          title: Content-Length
+          examples:
+            - '0'
+          type: string
+        Date:
+          title: Date
+          examples:
+            - Mon, 07 Aug 2023 11:12:15 GMT
+          type: string
+        Keep-Alive:
+          title: Keep-Alive
+          examples:
+            - timeout=70
+          type: string
+        Connection:
+          title: Connection
+          examples:
+            - keep-alive
+          type: string
+        Server:
+          title: Server
+          examples:
+            - ServiceNow
+          type: string
+        Strict-Transport-Security:
+          title: Strict-Transport-Security
+          examples:
+            - max-age=63072000; includeSubDomains
+          type: string
+      required: []
+      additionalProperties: true
+    reason:
+      title: Reason
+      examples:
+        - OK
+      type: string
+    response_text:
+      title: Response Text
+      type: string
+  required: []
+  additionalProperties: true
+meta:
+  endpoint: /api/now/table/incident/{{sys_id}}
+  method: PATCH

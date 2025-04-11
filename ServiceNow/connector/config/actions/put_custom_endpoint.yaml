@@ -1,0 +1,52 @@
+schema: action/1
+title: Put Custom Endpoint
+name: put_custom_endpoint
+description: Executes a PUT request to a ServiceNow custom endpoint using the specified
+  path parameter.
+inputs:
+  type: object
+  properties:
+    path_parameters:
+      title: Path Parameters
+      examples:
+        - custom_endpoint: table/incident
+      type: object
+      properties:
+        custom_endpoint:
+          title: Custom Endpoint
+          examples:
+            - table/incident
+          type: string
+      required:
+        - custom_endpoint
+      additionalProperties: true
+    parameters:
+      type: object
+      description: URL Query Parameters
+      properties: {}
+      required: []
+      additionalProperties: true
+    json_body:
+      type: object
+      description: JSON Body
+      properties: {}
+      required: []
+      additionalProperties: true
+    data_body:
+      type: object
+      description: Data Body
+      properties: {}
+      required: []
+      additionalProperties: true
+  required:
+    - path_parameters
+output:
+  examples:
+    - {}
+  type: object
+  properties: {}
+  required: []
+  additionalProperties: true
+meta:
+  endpoint: api/now/v2/{{custom_endpoint}}
+  method: PUT

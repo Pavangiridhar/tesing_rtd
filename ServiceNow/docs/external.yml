@@ -1,0 +1,12 @@
+"integration_features":
+  "Attachment Management": "Easily add and retrieve attachments for ServiceNow records,\
+    \ facilitating better documentation and evidence handling."
+  "Custom Actions Execution": "Perform custom actions on ServiceNow endpoints, offering\
+    \ flexibility to tailor automation to specific organizational needs."
+  "Incident Management Automation": "Create, update, and manage incidents directly\
+    \ within ServiceNow, ensuring timely response and resolution."
+  "Security Incident Response": "Streamline security incident processes by creating,\
+    \ updating, and retrieving security incident details, enhancing the organization's\
+    \ security posture."
+  "Service Request Fulfillment": "Automate the generation and tracking of service\
+    \ requests, improving efficiency and user satisfaction."

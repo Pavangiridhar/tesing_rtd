@@ -1,0 +1,966 @@
+schema: action/1
+title: Create Incident
+name: create_incident
+description: Initiate incident response workflows by creating a new incident record
+  in ServiceNow using the provided JSON body.
+inputs:
+  type: object
+  properties:
+    parameters:
+      title: Parameters
+      examples:
+        - sysparm_display_value: 'false'
+          sysparm_exclude_reference_link: false
+          sysparm_fields: ''
+          sysparm_input_display_value: false
+          sysparm_view: ''
+      type: object
+      properties:
+        sysparm_display_value:
+          title: Sysparm Display Value
+          description: Determines the type of data returned, either the actual values
+            from the database or the display values of the fields.
+          examples:
+            - 'false'
+          default: false
+          enum:
+            - true
+            - false
+            - all
+          type: string
+        sysparm_exclude_reference_link:
+          title: Sysparm Exclude Reference Link
+          description: Flag that indicates whether to exclude Table API links for
+            reference fields.
+          examples:
+            - false
+          type: boolean
+        sysparm_fields:
+          title: Sysparm Fields
+          description: Comma-separated list of fields to return in the response.
+          type: string
+        sysparm_input_display_value:
+          title: Sysparm Input Display Value
+          description: Flag that indicates whether to set field values using the display
+            value or the actual value.
+          examples:
+            - false
+          type: boolean
+        sysparm_view:
+          title: Sysparm View
+          description: UI view for which to render the data. Determines the fields
+            returned in the response.
+          enum:
+            - desktop
+            - mobile
+            - both
+          type: string
+      required: []
+      additionalProperties: true
+    json_body:
+      title: JSON Body
+      examples:
+        - short_description: Unable to connect to office wifi
+          assignment_group: 287ebd7da9fe198100f92cc8d1d2154e
+          urgency: '2'
+          impact: '2'
+          description: testing servicenow
+      type: object
+      properties:
+        short_description:
+          title: Short Description
+          examples:
+            - Unable to connect to office wifi
+          type: string
+        assignment_group:
+          title: Assignment Group
+          examples:
+            - 287ebd7da9fe198100f92cc8d1d2154e
+          type: string
+        urgency:
+          title: Urgency
+          description: Possible values are 1-High, 2-Medium, 3-Low.
+          enum:
+            - 1
+            - 2
+            - 3
+          examples:
+            - '2'
+          type: string
+        impact:
+          title: Impact
+          description: Possible values are 1-High, 2-Medium, 3-Low.
+          enum:
+            - 1
+            - 2
+            - 3
+          examples:
+            - '2'
+          type: string
+        description:
+          title: Description
+          examples:
+            - testing servicenow
+          type: string
+      required: []
+      additionalProperties: true
+  required:
+    - json_body
+  additionalProperties: true
+output:
+  examples:
+    - status_code: 201
+      response_headers:
+        Set-Cookie: JSESSIONID=65CFEB1152B06972DD21833AFE556414; Path=/; HttpOnly;Secure,
+          glide_user=; Max-Age=0; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/; Secure;
+          HttpOnly, glide_user_session=; Max-Age=0; Expires=Thu, 01-Jan-1970 00:00:10
+          GMT; Path=/; Secure; HttpOnly, glide_user_route=glide.0523df0e933b3d0b61bd3203715792eb;
+          Max-Age=2147483647; Expires=Sat, 25-Aug-2091 14:13:46 GMT; Path=/; Secure;
+          HttpOnly, glide_session_store=2AD13C4147203110D737CD9BD36D43A3; Max-Age=1800;
+          Expires=Mon, 07-Aug-2023 11:29:39 GMT; Path=/; Secure; HttpOnly, BIGipServerpool_dev60827=999184138.46398.0000;
+          path=/; Httponly; Secure
+        Server-Timing: sem_wait;dur=0, sesh_wait;dur=0
+        Content-Encoding: gzip
+        X-Is-Logged-In: 'true'
+        X-Transaction-ID: 6ed13c41a300
+        Location: https://dev60827.service-now.com/api/now/v2/table/incident/26d1744d47603110d737cd9bd36d436b
+        X-Content-Type-Options: nosniff
+        Pragma: no-store,no-cache
+        Cache-Control: no-cache,no-store,must-revalidate,max-age=-1
+        Expires: '0'
+        Content-Type: application/json;charset=UTF-8
+        Transfer-Encoding: chunked
+        Date: Mon, 07 Aug 2023 10:59:39 GMT
+        Keep-Alive: timeout=70
+        Connection: keep-alive
+        Server: ServiceNow
+        Strict-Transport-Security: max-age=63072000; includeSubDomains
+      reason: Created
+      json_body:
+        result:
+          parent: ''
+          made_sla: 'true'
+          caused_by: ''
+          watch_list: ''
+          upon_reject: cancel
+          sys_updated_on: '2023-08-07 10:59:39'
+          child_incidents: '0'
+          hold_reason: ''
+          origin_table: ''
+          task_effective_number: INC0010006
+          approval_history: ''
+          number: INC0010006
+          resolved_by: ''
+          sys_updated_by: admin
+          opened_by:
+            link: https://dev60827.service-now.com/api/now/v2/table/sys_user/6816f79cc0a8016401c5a33be04be441
+            value: 6816f79cc0a8016401c5a33be04be441
+          user_input: ''
+          sys_created_on: '2023-08-07 10:59:39'
+          sys_domain:
+            link: https://dev60827.service-now.com/api/now/v2/table/sys_user_group/global
+            value: global
+          state: '1'
+          route_reason: ''
+          sys_created_by: admin
+          knowledge: 'false'
+          order: ''
+          calendar_stc: ''
+          closed_at: ''
+          cmdb_ci: ''
+          delivery_plan: ''
+          contract: ''
+          impact: '3'
+          active: 'true'
+          work_notes_list: ''
+          business_service: ''
+          business_impact: ''
+          priority: '5'
+          sys_domain_path: /
+          rfc: ''
+          time_worked: ''
+          expected_start: ''
+          opened_at: '2023-08-07 10:59:39'
+          business_duration: ''
+          group_list: ''
+          work_end: ''
+          caller_id: ''
+          reopened_time: ''
+          resolved_at: ''
+          approval_set: ''
+          subcategory: ''
+          work_notes: ''
+          universal_request: ''
+          short_description: ''
+          close_code: ''
+          correlation_display: ''
+          delivery_task: ''
+          work_start: ''
+          assignment_group: ''
+          additional_assignee_list: ''
+          business_stc: ''
+          cause: ''
+          description: ''
+          origin_id: ''
+          calendar_duration: ''
+          close_notes: ''
+          notify: '1'
+          service_offering: ''
+          sys_class_name: incident
+          closed_by: ''
+          follow_up: ''
+          parent_incident: ''
+          sys_id: 26d1744d47603110d737cd9bd36d436b
+          contact_type: ''
+          reopened_by: ''
+          incident_state: '1'
+          urgency: '3'
+          problem_id: ''
+          company: ''
+          reassignment_count: '0'
+          activity_due: ''
+          assigned_to: ''
+          severity: '3'
+          comments: ''
+          approval: not requested
+          sla_due: ''
+          comments_and_work_notes: ''
+          due_date: ''
+          sys_mod_count: '0'
+          reopen_count: '0'
+          sys_tags: ''
+          escalation: '0'
+          upon_approval: proceed
+          correlation_id: ''
+          location: ''
+          category: inquiry
+  type: object
+  properties:
+    status_code:
+      title: Status Code
+      examples:
+        - 201
+      type: number
+    response_headers:
+      title: Response Headers
+      examples:
+        - Set-Cookie: JSESSIONID=65CFEB1152B06972DD21833AFE556414; Path=/; HttpOnly;Secure,
+            glide_user=; Max-Age=0; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/;
+            Secure; HttpOnly, glide_user_session=; Max-Age=0; Expires=Thu, 01-Jan-1970
+            00:00:10 GMT; Path=/; Secure; HttpOnly, glide_user_route=glide.0523df0e933b3d0b61bd3203715792eb;
+            Max-Age=2147483647; Expires=Sat, 25-Aug-2091 14:13:46 GMT; Path=/; Secure;
+            HttpOnly, glide_session_store=2AD13C4147203110D737CD9BD36D43A3; Max-Age=1800;
+            Expires=Mon, 07-Aug-2023 11:29:39 GMT; Path=/; Secure; HttpOnly, BIGipServerpool_dev60827=999184138.46398.0000;
+            path=/; Httponly; Secure
+          Server-Timing: sem_wait;dur=0, sesh_wait;dur=0
+          Content-Encoding: gzip
+          X-Is-Logged-In: 'true'
+          X-Transaction-ID: 6ed13c41a300
+          Location: https://dev60827.service-now.com/api/now/v2/table/incident/26d1744d47603110d737cd9bd36d436b
+          X-Content-Type-Options: nosniff
+          Pragma: no-store,no-cache
+          Cache-Control: no-cache,no-store,must-revalidate,max-age=-1
+          Expires: '0'
+          Content-Type: application/json;charset=UTF-8
+          Transfer-Encoding: chunked
+          Date: Mon, 07 Aug 2023 10:59:39 GMT
+          Keep-Alive: timeout=70
+          Connection: keep-alive
+          Server: ServiceNow
+          Strict-Transport-Security: max-age=63072000; includeSubDomains
+      type: object
+      properties:
+        Set-Cookie:
+          title: Set-Cookie
+          examples:
+            - JSESSIONID=65CFEB1152B06972DD21833AFE556414; Path=/; HttpOnly;Secure,
+              glide_user=; Max-Age=0; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/;
+              Secure; HttpOnly, glide_user_session=; Max-Age=0; Expires=Thu, 01-Jan-1970
+              00:00:10 GMT; Path=/; Secure; HttpOnly, glide_user_route=glide.0523df0e933b3d0b61bd3203715792eb;
+              Max-Age=2147483647; Expires=Sat, 25-Aug-2091 14:13:46 GMT; Path=/; Secure;
+              HttpOnly, glide_session_store=2AD13C4147203110D737CD9BD36D43A3; Max-Age=1800;
+              Expires=Mon, 07-Aug-2023 11:29:39 GMT; Path=/; Secure; HttpOnly, BIGipServerpool_dev60827=999184138.46398.0000;
+              path=/; Httponly; Secure
+          type: string
+        Server-Timing:
+          title: Server-Timing
+          examples:
+            - sem_wait;dur=0, sesh_wait;dur=0
+          type: string
+        Content-Encoding:
+          title: Content-Encoding
+          examples:
+            - gzip
+          type: string
+        X-Is-Logged-In:
+          title: X-Is-Logged-In
+          examples:
+            - 'true'
+          type: string
+        X-Transaction-ID:
+          title: X-Transaction-ID
+          examples:
+            - 6ed13c41a300
+          type: string
+        Location:
+          title: Location
+          examples:
+            - https://dev60827.service-now.com/api/now/v2/table/incident/26d1744d47603110d737cd9bd36d436b
+          type: string
+          format: uri-reference
+        X-Content-Type-Options:
+          title: X-Content-Type-Options
+          examples:
+            - nosniff
+          type: string
+        Pragma:
+          title: Pragma
+          examples:
+            - no-store,no-cache
+          type: string
+        Cache-Control:
+          title: Cache-Control
+          examples:
+            - no-cache,no-store,must-revalidate,max-age=-1
+          type: string
+        Expires:
+          title: Expires
+          examples:
+            - '0'
+          type: string
+        Content-Type:
+          title: Content-Type
+          examples:
+            - application/json;charset=UTF-8
+          type: string
+        Transfer-Encoding:
+          title: Transfer-Encoding
+          examples:
+            - chunked
+          type: string
+        Date:
+          title: Date
+          examples:
+            - Mon, 07 Aug 2023 10:59:39 GMT
+          type: string
+        Keep-Alive:
+          title: Keep-Alive
+          examples:
+            - timeout=70
+          type: string
+        Connection:
+          title: Connection
+          examples:
+            - keep-alive
+          type: string
+        Server:
+          title: Server
+          examples:
+            - ServiceNow
+          type: string
+        Strict-Transport-Security:
+          title: Strict-Transport-Security
+          examples:
+            - max-age=63072000; includeSubDomains
+          type: string
+      required: []
+      additionalProperties: true
+    reason:
+      title: Reason
+      examples:
+        - Created
+      type: string
+    json_body:
+      title: JSON Body
+      examples:
+        - result:
+            parent: ''
+            made_sla: 'true'
+            caused_by: ''
+            watch_list: ''
+            upon_reject: cancel
+            sys_updated_on: '2023-08-07 10:59:39'
+            child_incidents: '0'
+            hold_reason: ''
+            origin_table: ''
+            task_effective_number: INC0010006
+            approval_history: ''
+            number: INC0010006
+            resolved_by: ''
+            sys_updated_by: admin
+            opened_by:
+              link: https://dev60827.service-now.com/api/now/v2/table/sys_user/6816f79cc0a8016401c5a33be04be441
+              value: 6816f79cc0a8016401c5a33be04be441
+            user_input: ''
+            sys_created_on: '2023-08-07 10:59:39'
+            sys_domain:
+              link: https://dev60827.service-now.com/api/now/v2/table/sys_user_group/global
+              value: global
+            state: '1'
+            route_reason: ''
+            sys_created_by: admin
+            knowledge: 'false'
+            order: ''
+            calendar_stc: ''
+            closed_at: ''
+            cmdb_ci: ''
+            delivery_plan: ''
+            contract: ''
+            impact: '3'
+            active: 'true'
+            work_notes_list: ''
+            business_service: ''
+            business_impact: ''
+            priority: '5'
+            sys_domain_path: /
+            rfc: ''
+            time_worked: ''
+            expected_start: ''
+            opened_at: '2023-08-07 10:59:39'
+            business_duration: ''
+            group_list: ''
+            work_end: ''
+            caller_id: ''
+            reopened_time: ''
+            resolved_at: ''
+            approval_set: ''
+            subcategory: ''
+            work_notes: ''
+            universal_request: ''
+            short_description: ''
+            close_code: ''
+            correlation_display: ''
+            delivery_task: ''
+            work_start: ''
+            assignment_group: ''
+            additional_assignee_list: ''
+            business_stc: ''
+            cause: ''
+            description: ''
+            origin_id: ''
+            calendar_duration: ''
+            close_notes: ''
+            notify: '1'
+            service_offering: ''
+            sys_class_name: incident
+            closed_by: ''
+            follow_up: ''
+            parent_incident: ''
+            sys_id: 26d1744d47603110d737cd9bd36d436b
+            contact_type: ''
+            reopened_by: ''
+            incident_state: '1'
+            urgency: '3'
+            problem_id: ''
+            company: ''
+            reassignment_count: '0'
+            activity_due: ''
+            assigned_to: ''
+            severity: '3'
+            comments: ''
+            approval: not requested
+            sla_due: ''
+            comments_and_work_notes: ''
+            due_date: ''
+            sys_mod_count: '0'
+            reopen_count: '0'
+            sys_tags: ''
+            escalation: '0'
+            upon_approval: proceed
+            correlation_id: ''
+            location: ''
+            category: inquiry
+      type: object
+      properties:
+        result:
+          title: Result
+          examples:
+            - parent: ''
+              made_sla: 'true'
+              caused_by: ''
+              watch_list: ''
+              upon_reject: cancel
+              sys_updated_on: '2023-08-07 10:59:39'
+              child_incidents: '0'
+              hold_reason: ''
+              origin_table: ''
+              task_effective_number: INC0010006
+              approval_history: ''
+              number: INC0010006
+              resolved_by: ''
+              sys_updated_by: admin
+              opened_by:
+                link: https://dev60827.service-now.com/api/now/v2/table/sys_user/6816f79cc0a8016401c5a33be04be441
+                value: 6816f79cc0a8016401c5a33be04be441
+              user_input: ''
+              sys_created_on: '2023-08-07 10:59:39'
+              sys_domain:
+                link: https://dev60827.service-now.com/api/now/v2/table/sys_user_group/global
+                value: global
+              state: '1'
+              route_reason: ''
+              sys_created_by: admin
+              knowledge: 'false'
+              order: ''
+              calendar_stc: ''
+              closed_at: ''
+              cmdb_ci: ''
+              delivery_plan: ''
+              contract: ''
+              impact: '3'
+              active: 'true'
+              work_notes_list: ''
+              business_service: ''
+              business_impact: ''
+              priority: '5'
+              sys_domain_path: /
+              rfc: ''
+              time_worked: ''
+              expected_start: ''
+              opened_at: '2023-08-07 10:59:39'
+              business_duration: ''
+              group_list: ''
+              work_end: ''
+              caller_id: ''
+              reopened_time: ''
+              resolved_at: ''
+              approval_set: ''
+              subcategory: ''
+              work_notes: ''
+              universal_request: ''
+              short_description: ''
+              close_code: ''
+              correlation_display: ''
+              delivery_task: ''
+              work_start: ''
+              assignment_group: ''
+              additional_assignee_list: ''
+              business_stc: ''
+              cause: ''
+              description: ''
+              origin_id: ''
+              calendar_duration: ''
+              close_notes: ''
+              notify: '1'
+              service_offering: ''
+              sys_class_name: incident
+              closed_by: ''
+              follow_up: ''
+              parent_incident: ''
+              sys_id: 26d1744d47603110d737cd9bd36d436b
+              contact_type: ''
+              reopened_by: ''
+              incident_state: '1'
+              urgency: '3'
+              problem_id: ''
+              company: ''
+              reassignment_count: '0'
+              activity_due: ''
+              assigned_to: ''
+              severity: '3'
+              comments: ''
+              approval: not requested
+              sla_due: ''
+              comments_and_work_notes: ''
+              due_date: ''
+              sys_mod_count: '0'
+              reopen_count: '0'
+              sys_tags: ''
+              escalation: '0'
+              upon_approval: proceed
+              correlation_id: ''
+              location: ''
+              category: inquiry
+          type: object
+          properties:
+            parent:
+              title: Parent
+              examples:
+                - ''
+              type: string
+            made_sla:
+              title: Made Sla
+              examples:
+                - 'true'
+              type: string
+            caused_by:
+              title: Caused By
+              examples:
+                - ''
+              type: string
+            watch_list:
+              title: Watch List
+              examples:
+                - ''
+              type: string
+            upon_reject:
+              title: Upon Reject
+              examples:
+                - cancel
+              type: string
+            sys_updated_on:
+              title: Sys Updated On
+              examples:
+                - '2023-08-07 10:59:39'
+              type: string
+            child_incidents:
+              title: Child Incidents
+              examples:
+                - '0'
+              type: string
+            hold_reason:
+              title: Hold Reason
+              examples:
+                - ''
+              type: string
+            origin_table:
+              title: Origin Table
+              examples:
+                - ''
+              type: string
+            task_effective_number:
+              title: Task Effective Number
+              examples:
+                - INC0010006
+              type: string
+            approval_history:
+              title: Approval History
+              examples:
+                - ''
+              type: string
+            number:
+              title: Number
+              examples:
+                - INC0010006
+              type: string
+            resolved_by:
+              title: Resolved By
+              examples:
+                - ''
+              type: string
+            sys_updated_by:
+              title: Sys Updated By
+              examples:
+                - admin
+              type: string
+            opened_by:
+              title: Opened By
+              examples:
+                - link: https://dev60827.service-now.com/api/now/v2/table/sys_user/6816f79cc0a8016401c5a33be04be441
+                  value: 6816f79cc0a8016401c5a33be04be441
+              type: object
+              properties:
+                link:
+                  title: Link
+                  examples:
+                    - https://dev60827.service-now.com/api/now/v2/table/sys_user/6816f79cc0a8016401c5a33be04be441
+                  type: string
+                  format: uri-reference
+                value:
+                  title: Value
+                  examples:
+                    - 6816f79cc0a8016401c5a33be04be441
+                  type: string
+              required: []
+              additionalProperties: true
+            user_input:
+              title: User Input
+              type: string
+            sys_created_on:
+              title: Sys Created On
+              examples:
+                - '2023-08-07 10:59:39'
+              type: string
+            sys_domain:
+              title: Sys Domain
+              examples:
+                - link: https://dev60827.service-now.com/api/now/v2/table/sys_user_group/global
+                  value: global
+              type: object
+              properties:
+                link:
+                  title: Link
+                  examples:
+                    - https://dev60827.service-now.com/api/now/v2/table/sys_user_group/global
+                  type: string
+                  format: uri-reference
+                value:
+                  title: Value
+                  examples:
+                    - global
+                  type: string
+              required: []
+              additionalProperties: true
+            state:
+              title: State
+              examples:
+                - '1'
+              type: string
+            route_reason:
+              title: Route Reason
+              type: string
+            sys_created_by:
+              title: Sys Created By
+              examples:
+                - admin
+              type: string
+            knowledge:
+              title: Knowledge
+              examples:
+                - 'false'
+              type: string
+            order:
+              title: Order
+              type: string
+            calendar_stc:
+              title: Calendar Stc
+              type: string
+            closed_at:
+              title: Closed At
+              type: string
+            cmdb_ci:
+              title: Cmdb Ci
+              type: string
+            delivery_plan:
+              title: Delivery Plan
+              type: string
+            contract:
+              title: Contract
+              type: string
+            impact:
+              title: Impact
+              examples:
+                - '3'
+              type: string
+            active:
+              title: Active
+              examples:
+                - 'true'
+              type: string
+            work_notes_list:
+              title: Work Notes List
+              type: string
+            business_service:
+              title: Business Service
+              type: string
+            business_impact:
+              title: Business Impact
+              type: string
+            priority:
+              title: Priority
+              examples:
+                - '5'
+              type: string
+            sys_domain_path:
+              title: Sys Domain Path
+              examples:
+                - /
+              type: string
+            rfc:
+              title: Rfc
+              type: string
+            time_worked:
+              title: Time Worked
+              type: string
+            expected_start:
+              title: Expected Start
+              type: string
+            opened_at:
+              title: Opened At
+              examples:
+                - '2023-08-07 10:59:39'
+              type: string
+            business_duration:
+              title: Business Duration
+              type: string
+            group_list:
+              title: Group List
+              type: string
+            work_end:
+              title: Work End
+              type: string
+            caller_id:
+              title: Caller ID
+              type: string
+            reopened_time:
+              title: Reopened Time
+              type: string
+            resolved_at:
+              title: Resolved At
+              type: string
+            approval_set:
+              title: Approval Set
+              type: string
+            subcategory:
+              title: Subcategory
+              type: string
+            work_notes:
+              title: Work Notes
+              type: string
+            universal_request:
+              title: Universal Request
+              type: string
+            short_description:
+              title: Short Description
+              type: string
+            close_code:
+              title: Close Code
+              type: string
+            correlation_display:
+              title: Correlation Display
+              type: string
+            delivery_task:
+              title: Delivery Task
+              type: string
+            work_start:
+              title: Work Start
+              type: string
+            assignment_group:
+              title: Assignment Group
+              type: string
+            additional_assignee_list:
+              title: Additional Assignee List
+              type: string
+            business_stc:
+              title: Business Stc
+              type: string
+            cause:
+              title: Cause
+              type: string
+            description:
+              title: Description
+              type: string
+            origin_id:
+              title: Origin ID
+              type: string
+            calendar_duration:
+              title: Calendar Duration
+              type: string
+            close_notes:
+              title: Close Notes
+              type: string
+            notify:
+              title: Notify
+              examples:
+                - '1'
+              type: string
+            service_offering:
+              title: Service Offering
+              type: string
+            sys_class_name:
+              title: Sys Class Name
+              examples:
+                - incident
+              type: string
+            closed_by:
+              title: Closed By
+              type: string
+            follow_up:
+              title: Follow Up
+              type: string
+            parent_incident:
+              title: Parent Incident
+              type: string
+            sys_id:
+              title: Sys ID
+              examples:
+                - 26d1744d47603110d737cd9bd36d436b
+              type: string
+            contact_type:
+              title: Contact Type
+              type: string
+            reopened_by:
+              title: Reopened By
+              type: string
+            incident_state:
+              title: Incident State
+              examples:
+                - '1'
+              type: string
+            urgency:
+              title: Urgency
+              examples:
+                - '3'
+              type: string
+            problem_id:
+              title: Problem ID
+              type: string
+            company:
+              title: Company
+              type: string
+            reassignment_count:
+              title: Reassignment Count
+              examples:
+                - '0'
+              type: string
+            activity_due:
+              title: Activity Due
+              type: string
+            assigned_to:
+              title: Assigned To
+              type: string
+            severity:
+              title: Severity
+              examples:
+                - '3'
+              type: string
+            comments:
+              title: Comments
+              type: string
+            approval:
+              title: Approval
+              examples:
+                - not requested
+              type: string
+            sla_due:
+              title: Sla Due
+              type: string
+            comments_and_work_notes:
+              title: Comments And Work Notes
+              type: string
+            due_date:
+              title: Due Date
+              type: string
+            sys_mod_count:
+              title: Sys Mod Count
+              examples:
+                - '0'
+              type: string
+            reopen_count:
+              title: Reopen Count
+              examples:
+                - '0'
+              type: string
+            sys_tags:
+              title: Sys Tags
+              type: string
+            escalation:
+              title: Escalation
+              examples:
+                - '0'
+              type: string
+            upon_approval:
+              title: Upon Approval
+              examples:
+                - proceed
+              type: string
+            correlation_id:
+              title: Correlation ID
+              type: string
+            location:
+              title: Location
+              type: string
+            category:
+              title: Category
+              examples:
+                - inquiry
+              type: string
+          required: []
+          additionalProperties: true
+      required: []
+      additionalProperties: true
+  required: []
+  additionalProperties: true
+meta:
+  endpoint: /api/now/table/incident
+  method: POST

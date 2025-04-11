@@ -1,0 +1,759 @@
+schema: action/1
+title: Get Table
+name: get_table
+description: Retrieves records from a specified ServiceNow table using the 'tableName'
+  path parameter.
+inputs:
+  type: object
+  properties:
+    path_parameters:
+      title: Path Parameters
+      examples:
+        - tableName: problem
+      type: object
+      properties:
+        tableName:
+          title: Table Name
+          description: Name of the table from which to retrieve the records.
+          examples:
+            - problem
+          type: string
+      required:
+        - tableName
+      additionalProperties: true
+    parameters:
+      title: Parameters
+      examples:
+        - name_value_pairs:
+            active: 'true'
+            assigned_to: john.smith
+            state: closed
+          sysparm_display_value: all
+          sysparm_exclude_reference_link: true
+          sysparm_fields: field1,field2,field3
+          sysparm_limit: 100
+          sysparm_no_count: true
+          sysparm_offset: 0
+          sysparm_query: caller_id=javascript:gs.getUserID()^active=true^ORDERBYnumber^ORDERBYDESCcategory
+          sysparm_query_category: category_name
+          sysparm_query_no_domain: false
+          sysparm_suppress_pagination_header: true
+          sysparm_view: desktop
+      type: object
+      properties:
+        name_value_pairs:
+          title: Name Value Pairs
+          examples:
+            - active: 'true'
+              assigned_to: john.smith
+              state: closed
+          type: object
+          properties:
+            active:
+              title: Active
+              examples:
+                - 'true'
+              type: string
+            assigned_to:
+              title: Assigned To
+              examples:
+                - john.smith
+              type: string
+            state:
+              title: State
+              examples:
+                - closed
+              type: string
+          required: []
+          additionalProperties: true
+        sysparm_display_value:
+          title: Sysparm Display Value
+          examples:
+            - all
+          type: string
+        sysparm_exclude_reference_link:
+          title: Sysparm Exclude Reference Link
+          examples:
+            - true
+          type: boolean
+        sysparm_fields:
+          title: Sysparm Fields
+          examples:
+            - field1,field2,field3
+          type: string
+        sysparm_limit:
+          title: Sysparm Limit
+          examples:
+            - 100
+          type: number
+        sysparm_no_count:
+          title: Sysparm No Count
+          examples:
+            - true
+          type: boolean
+        sysparm_offset:
+          title: Sysparm Offset
+          examples:
+            - 0
+          type: number
+        sysparm_query:
+          title: Sysparm Query
+          examples:
+            - caller_id=javascript:gs.getUserID()^active=true^ORDERBYnumber^ORDERBYDESCcategory
+          type: string
+        sysparm_query_category:
+          title: Sysparm Query Category
+          examples:
+            - category_name
+          type: string
+        sysparm_query_no_domain:
+          title: Sysparm Query No Domain
+          examples:
+            - false
+          type: boolean
+        sysparm_suppress_pagination_header:
+          title: Sysparm Suppress Pagination Header
+          examples:
+            - true
+          type: boolean
+        sysparm_view:
+          title: Sysparm View
+          examples:
+            - desktop
+          type: string
+      required: []
+      additionalProperties: true
+  required:
+    - path_parameters
+  additionalProperties: true
+output:
+  examples:
+    - status_code: 200
+      response_headers: {}
+      reason: OK
+      json_body:
+        result:
+          - parent: ''
+            made_sla: 'true'
+            watch_list: ''
+            upon_reject: cancel
+            sys_updated_on: '2016-01-19 04:52:04'
+            approval_history: ''
+            number: PRB0000050
+            sys_updated_by: glide.maint
+            opened_by:
+              link: https://instance.servicenow.com/api/now/table/sys_user/glide.maint
+              value: glide.maint
+            user_input: ''
+            sys_created_on: '2016-01-19 04:51:19'
+            sys_domain:
+              link: https://instance.servicenow.com/api/now/table/sys_user_group/global
+              value: global
+            state: '4'
+            sys_created_by: glide.maint
+            knowledge: 'false'
+            order: ''
+            closed_at: '2016-01-19 04:52:04'
+            cmdb_ci:
+              link: https://instance.servicenow.com/api/now/table/cmdb_ci/55b35562c0a8010e01cff22378e0aea9
+              value: 55b35562c0a8010e01cff22378e0aea9
+            delivery_plan: ''
+            impact: '3'
+            active: 'false'
+            work_notes_list: ''
+            business_service: ''
+            priority: '4'
+            sys_domain_path: /
+            time_worked: ''
+            expected_start: ''
+            rejection_goto: ''
+            opened_at: '2016-01-19 04:49:47'
+            business_duration: '1970-01-01 00:00:00'
+            group_list: ''
+            work_end: ''
+            approval_set: ''
+            wf_activity: ''
+            work_notes: ''
+            short_description: Switch occasionally drops connections
+            correlation_display: ''
+            delivery_task: ''
+            work_start: ''
+            assignment_group: ''
+            additional_assignee_list: ''
+            description: Switch occasionally drops connections
+            calendar_duration: '1970-01-01 00:02:17'
+            close_notes: updated firmware
+            sys_class_name: problem
+            closed_by: ''
+            follow_up: ''
+            sys_id: 04ce72c9c0a8016600b5b7f75ac67b5b
+            contact_type: phone
+            urgency: '3'
+            company: ''
+            reassignment_count: ''
+            activity_due: ''
+            assigned_to: ''
+            comments: ''
+            approval: not requested
+            sla_due: ''
+            comments_and_work_notes: ''
+            due_date: ''
+            sys_mod_count: '1'
+            sys_tags: ''
+            escalation: '0'
+            upon_approval: proceed
+            correlation_id: ''
+            location: ''
+  type: object
+  properties:
+    status_code:
+      title: Status Code
+      examples:
+        - 200
+      type: number
+    response_headers:
+      title: Response Headers
+      examples:
+        - {}
+      type: object
+      properties: {}
+      required: []
+      additionalProperties: true
+    reason:
+      title: Reason
+      examples:
+        - OK
+      type: string
+    json_body:
+      title: JSON Body
+      examples:
+        - result:
+            - parent: ''
+              made_sla: 'true'
+              watch_list: ''
+              upon_reject: cancel
+              sys_updated_on: '2016-01-19 04:52:04'
+              approval_history: ''
+              number: PRB0000050
+              sys_updated_by: glide.maint
+              opened_by:
+                link: https://instance.servicenow.com/api/now/table/sys_user/glide.maint
+                value: glide.maint
+              user_input: ''
+              sys_created_on: '2016-01-19 04:51:19'
+              sys_domain:
+                link: https://instance.servicenow.com/api/now/table/sys_user_group/global
+                value: global
+              state: '4'
+              sys_created_by: glide.maint
+              knowledge: 'false'
+              order: ''
+              closed_at: '2016-01-19 04:52:04'
+              cmdb_ci:
+                link: https://instance.servicenow.com/api/now/table/cmdb_ci/55b35562c0a8010e01cff22378e0aea9
+                value: 55b35562c0a8010e01cff22378e0aea9
+              delivery_plan: ''
+              impact: '3'
+              active: 'false'
+              work_notes_list: ''
+              business_service: ''
+              priority: '4'
+              sys_domain_path: /
+              time_worked: ''
+              expected_start: ''
+              rejection_goto: ''
+              opened_at: '2016-01-19 04:49:47'
+              business_duration: '1970-01-01 00:00:00'
+              group_list: ''
+              work_end: ''
+              approval_set: ''
+              wf_activity: ''
+              work_notes: ''
+              short_description: Switch occasionally drops connections
+              correlation_display: ''
+              delivery_task: ''
+              work_start: ''
+              assignment_group: ''
+              additional_assignee_list: ''
+              description: Switch occasionally drops connections
+              calendar_duration: '1970-01-01 00:02:17'
+              close_notes: updated firmware
+              sys_class_name: problem
+              closed_by: ''
+              follow_up: ''
+              sys_id: 04ce72c9c0a8016600b5b7f75ac67b5b
+              contact_type: phone
+              urgency: '3'
+              company: ''
+              reassignment_count: ''
+              activity_due: ''
+              assigned_to: ''
+              comments: ''
+              approval: not requested
+              sla_due: ''
+              comments_and_work_notes: ''
+              due_date: ''
+              sys_mod_count: '1'
+              sys_tags: ''
+              escalation: '0'
+              upon_approval: proceed
+              correlation_id: ''
+              location: ''
+      type: object
+      properties:
+        result:
+          title: Result
+          examples:
+            - - parent: ''
+                made_sla: 'true'
+                watch_list: ''
+                upon_reject: cancel
+                sys_updated_on: '2016-01-19 04:52:04'
+                approval_history: ''
+                number: PRB0000050
+                sys_updated_by: glide.maint
+                opened_by:
+                  link: https://instance.servicenow.com/api/now/table/sys_user/glide.maint
+                  value: glide.maint
+                user_input: ''
+                sys_created_on: '2016-01-19 04:51:19'
+                sys_domain:
+                  link: https://instance.servicenow.com/api/now/table/sys_user_group/global
+                  value: global
+                state: '4'
+                sys_created_by: glide.maint
+                knowledge: 'false'
+                order: ''
+                closed_at: '2016-01-19 04:52:04'
+                cmdb_ci:
+                  link: https://instance.servicenow.com/api/now/table/cmdb_ci/55b35562c0a8010e01cff22378e0aea9
+                  value: 55b35562c0a8010e01cff22378e0aea9
+                delivery_plan: ''
+                impact: '3'
+                active: 'false'
+                work_notes_list: ''
+                business_service: ''
+                priority: '4'
+                sys_domain_path: /
+                time_worked: ''
+                expected_start: ''
+                rejection_goto: ''
+                opened_at: '2016-01-19 04:49:47'
+                business_duration: '1970-01-01 00:00:00'
+                group_list: ''
+                work_end: ''
+                approval_set: ''
+                wf_activity: ''
+                work_notes: ''
+                short_description: Switch occasionally drops connections
+                correlation_display: ''
+                delivery_task: ''
+                work_start: ''
+                assignment_group: ''
+                additional_assignee_list: ''
+                description: Switch occasionally drops connections
+                calendar_duration: '1970-01-01 00:02:17'
+                close_notes: updated firmware
+                sys_class_name: problem
+                closed_by: ''
+                follow_up: ''
+                sys_id: 04ce72c9c0a8016600b5b7f75ac67b5b
+                contact_type: phone
+                urgency: '3'
+                company: ''
+                reassignment_count: ''
+                activity_due: ''
+                assigned_to: ''
+                comments: ''
+                approval: not requested
+                sla_due: ''
+                comments_and_work_notes: ''
+                due_date: ''
+                sys_mod_count: '1'
+                sys_tags: ''
+                escalation: '0'
+                upon_approval: proceed
+                correlation_id: ''
+                location: ''
+          type: array
+          items:
+            type: object
+            properties:
+              parent:
+                title: Parent
+                examples:
+                  - ''
+                type: string
+              made_sla:
+                title: Made Sla
+                examples:
+                  - 'true'
+                type: string
+              watch_list:
+                title: Watch List
+                examples:
+                  - ''
+                type: string
+              upon_reject:
+                title: Upon Reject
+                examples:
+                  - cancel
+                type: string
+              sys_updated_on:
+                title: Sys Updated On
+                examples:
+                  - '2016-01-19 04:52:04'
+                type: string
+              approval_history:
+                title: Approval History
+                examples:
+                  - ''
+                type: string
+              number:
+                title: Number
+                examples:
+                  - PRB0000050
+                type: string
+              sys_updated_by:
+                title: Sys Updated By
+                examples:
+                  - glide.maint
+                type: string
+              opened_by:
+                title: Opened By
+                examples:
+                  - link: https://instance.servicenow.com/api/now/table/sys_user/glide.maint
+                    value: glide.maint
+                type: object
+                properties:
+                  link:
+                    title: Link
+                    examples:
+                      - https://instance.servicenow.com/api/now/table/sys_user/glide.maint
+                    type: string
+                    format: uri-reference
+                  value:
+                    title: Value
+                    examples:
+                      - glide.maint
+                    type: string
+                required: []
+                additionalProperties: true
+              user_input:
+                title: User Input
+                examples:
+                  - ''
+                type: string
+              sys_created_on:
+                title: Sys Created On
+                examples:
+                  - '2016-01-19 04:51:19'
+                type: string
+              sys_domain:
+                title: Sys Domain
+                examples:
+                  - link: https://instance.servicenow.com/api/now/table/sys_user_group/global
+                    value: global
+                type: object
+                properties:
+                  link:
+                    title: Link
+                    examples:
+                      - https://instance.servicenow.com/api/now/table/sys_user_group/global
+                    type: string
+                    format: uri-reference
+                  value:
+                    title: Value
+                    examples:
+                      - global
+                    type: string
+                required: []
+                additionalProperties: true
+              state:
+                title: State
+                examples:
+                  - '4'
+                type: string
+              sys_created_by:
+                title: Sys Created By
+                examples:
+                  - glide.maint
+                type: string
+              knowledge:
+                title: Knowledge
+                examples:
+                  - 'false'
+                type: string
+              order:
+                title: Order
+                examples:
+                  - ''
+                type: string
+              closed_at:
+                title: Closed At
+                examples:
+                  - '2016-01-19 04:52:04'
+                type: string
+              cmdb_ci:
+                title: Cmdb Ci
+                examples:
+                  - link: https://instance.servicenow.com/api/now/table/cmdb_ci/55b35562c0a8010e01cff22378e0aea9
+                    value: 55b35562c0a8010e01cff22378e0aea9
+                type: object
+                properties:
+                  link:
+                    title: Link
+                    examples:
+                      - https://instance.servicenow.com/api/now/table/cmdb_ci/55b35562c0a8010e01cff22378e0aea9
+                    type: string
+                    format: uri-reference
+                  value:
+                    title: Value
+                    examples:
+                      - 55b35562c0a8010e01cff22378e0aea9
+                    type: string
+                required: []
+                additionalProperties: true
+              delivery_plan:
+                title: Delivery Plan
+                examples:
+                  - ''
+                type: string
+              impact:
+                title: Impact
+                examples:
+                  - '3'
+                type: string
+              active:
+                title: Active
+                examples:
+                  - 'false'
+                type: string
+              work_notes_list:
+                title: Work Notes List
+                examples:
+                  - ''
+                type: string
+              business_service:
+                title: Business Service
+                examples:
+                  - ''
+                type: string
+              priority:
+                title: Priority
+                examples:
+                  - '4'
+                type: string
+              sys_domain_path:
+                title: Sys Domain Path
+                examples:
+                  - /
+                type: string
+              time_worked:
+                title: Time Worked
+                examples:
+                  - ''
+                type: string
+              expected_start:
+                title: Expected Start
+                examples:
+                  - ''
+                type: string
+              rejection_goto:
+                title: Rejection Goto
+                examples:
+                  - ''
+                type: string
+              opened_at:
+                title: Opened At
+                examples:
+                  - '2016-01-19 04:49:47'
+                type: string
+              business_duration:
+                title: Business Duration
+                examples:
+                  - '1970-01-01 00:00:00'
+                type: string
+              group_list:
+                title: Group List
+                examples:
+                  - ''
+                type: string
+              work_end:
+                title: Work End
+                examples:
+                  - ''
+                type: string
+              approval_set:
+                title: Approval Set
+                examples:
+                  - ''
+                type: string
+              wf_activity:
+                title: Wf Activity
+                examples:
+                  - ''
+                type: string
+              work_notes:
+                title: Work Notes
+                examples:
+                  - ''
+                type: string
+              short_description:
+                title: Short Description
+                examples:
+                  - Switch occasionally drops connections
+                type: string
+              correlation_display:
+                title: Correlation Display
+                examples:
+                  - ''
+                type: string
+              delivery_task:
+                title: Delivery Task
+                examples:
+                  - ''
+                type: string
+              work_start:
+                title: Work Start
+                examples:
+                  - ''
+                type: string
+              assignment_group:
+                title: Assignment Group
+                examples:
+                  - ''
+                type: string
+              additional_assignee_list:
+                title: Additional Assignee List
+                examples:
+                  - ''
+                type: string
+              description:
+                title: Description
+                examples:
+                  - Switch occasionally drops connections
+                type: string
+              calendar_duration:
+                title: Calendar Duration
+                examples:
+                  - '1970-01-01 00:02:17'
+                type: string
+              close_notes:
+                title: Close Notes
+                examples:
+                  - updated firmware
+                type: string
+              sys_class_name:
+                title: Sys Class Name
+                examples:
+                  - problem
+                type: string
+              closed_by:
+                title: Closed By
+                examples:
+                  - ''
+                type: string
+              follow_up:
+                title: Follow Up
+                examples:
+                  - ''
+                type: string
+              sys_id:
+                title: Sys ID
+                examples:
+                  - 04ce72c9c0a8016600b5b7f75ac67b5b
+                type: string
+              contact_type:
+                title: Contact Type
+                examples:
+                  - phone
+                type: string
+              urgency:
+                title: Urgency
+                examples:
+                  - '3'
+                type: string
+              company:
+                title: Company
+                examples:
+                  - ''
+                type: string
+              reassignment_count:
+                title: Reassignment Count
+                examples:
+                  - ''
+                type: string
+              activity_due:
+                title: Activity Due
+                examples:
+                  - ''
+                type: string
+              assigned_to:
+                title: Assigned To
+                examples:
+                  - ''
+                type: string
+              comments:
+                title: Comments
+                examples:
+                  - ''
+                type: string
+              approval:
+                title: Approval
+                examples:
+                  - not requested
+                type: string
+              sla_due:
+                title: Sla Due
+                examples:
+                  - ''
+                type: string
+              comments_and_work_notes:
+                title: Comments And Work Notes
+                examples:
+                  - ''
+                type: string
+              due_date:
+                title: Due Date
+                examples:
+                  - ''
+                type: string
+              sys_mod_count:
+                title: Sys Mod Count
+                examples:
+                  - '1'
+                type: string
+              sys_tags:
+                title: Sys Tags
+                examples:
+                  - ''
+                type: string
+              escalation:
+                title: Escalation
+                examples:
+                  - '0'
+                type: string
+              upon_approval:
+                title: Upon Approval
+                examples:
+                  - proceed
+                type: string
+              correlation_id:
+                title: Correlation ID
+                examples:
+                  - ''
+                type: string
+              location:
+                title: Location
+                examples:
+                  - ''
+                type: string
+            required: []
+      required: []
+      additionalProperties: true
+  required: []
+  additionalProperties: true
+meta:
+  endpoint: api/now/v2/table/{{tableName}}
+  method: GET

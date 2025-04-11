@@ -1,0 +1,25 @@
+vendor: ServiceNow
+product: ServiceNow
+name: servicenow
+schema: connector/1
+author: Swimlane
+bugs: ''
+iconImage: ../image/logo.png
+description: Automate itsm and security workflows with servicenow integration.
+homepage: https://swimlane.com
+keywords:
+  - Case & Ticket Management
+license: AGPL-3.0
+meta:
+  imageRepository: quay.io/swimlane-connectors/servicenow
+  private: false
+  publishConfig:
+    access: public
+  buildConfig:
+    template: python_310_definition
+repository: https://github.com/swimlane/t_servicenow
+title: ServiceNow
+version: 1.16.0
+runConfig:
+  inputs:
+    type: stdin

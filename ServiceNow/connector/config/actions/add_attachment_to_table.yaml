@@ -1,0 +1,436 @@
+schema: action/1
+title: Add Attachment to Table
+name: add_attachment_to_table
+description: Adds an attachment to a ServiceNow table using the provided file name,
+  table name, and system ID.
+inputs:
+  type: object
+  properties:
+    attachments:
+      description: File to be uploaded
+      title: Attachments
+      type: array
+      items:
+        additionalProperties: false
+        contentDisposition: attachment
+        type: object
+        required:
+          - file_name
+          - file
+        properties:
+          file_name:
+            type: string
+          file:
+            type: string
+            format: binary
+    parameters:
+      title: Parameters
+      examples:
+        - encryption_context: ''
+          file_name: test
+          table_name: incident
+          table_sys_id: 1c741bd70b2322007518478d83673af3
+      type: object
+      properties:
+        encryption_context:
+          title: Encryption Context
+          examples:
+            - ''
+          type: string
+          description: Sys_id of an encryption context record. Specify this parameter
+            to allow only users with the specified encryption context to access the
+            attachment.
+        file_name:
+          title: File Name
+          examples:
+            - test
+          type: string
+        table_name:
+          title: Table Name
+          examples:
+            - incident
+          type: string
+        table_sys_id:
+          title: Table Sys ID
+          examples:
+            - 1c741bd70b2322007518478d83673af3
+          type: string
+          description: Sys_id of the record in the table specified in table_name that
+            you want to attach the file to.
+      required:
+        - file_name
+        - table_name
+        - table_sys_id
+      additionalProperties: true
+    headers:
+      title: Headers
+      examples:
+        - Content-type: application/json
+      type: object
+      properties:
+        Content-Type:
+          title: Content Type
+          examples:
+            - application/json
+          type: string
+      required:
+        - Content-Type
+      additionalProperties: true
+  required:
+    - attachments
+  additionalProperties: true
+output:
+  examples:
+    - status_code: 201
+      response_headers:
+        Server-Timing: sem_wait;dur=0, sesh_wait;dur=0
+        Content-Encoding: gzip
+        X-Is-Logged-In: 'true'
+        X-Transaction-ID: 89f9d2509783
+        Location: https://dev130168.service-now.com/api/now/attachment/41f9dad09783111084d57e121153af94/file
+        X-Content-Type-Options: nosniff
+        Pragma: no-store,no-cache
+        Cache-Control: no-cache,no-store,must-revalidate,max-age=-1
+        Expires: '0'
+        Content-Type: application/json;charset=UTF-8
+        Transfer-Encoding: chunked
+        Date: Sat, 05 Nov 2022 00:53:43 GMT
+        Keep-Alive: timeout=20
+        Connection: keep-alive
+        Server: ServiceNow
+        Set-Cookie: glide_user=; Max-Age=0; Expires=Thu, 01-Jan-1970 00:00:10 GMT;
+          Path=/; HttpOnly; SameSite=None; Secure, glide_user_session=; Max-Age=0;
+          Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/; HttpOnly; SameSite=None;
+          Secure, glide_user_route=glide.f6d1c4085a807931391acf9b7192b09e; Max-Age=2147483647;
+          Expires=Thu, 23-Nov-2090 04:07:50 GMT; Path=/; HttpOnly; SameSite=None;
+          Secure, glide_session_store=09F91ADC9743111084D57E121153AFDE; Max-Age=1800;
+          Expires=Sat, 05-Nov-2022 01:23:43 GMT; Path=/; HttpOnly; SameSite=None;
+          Secure
+        Strict-Transport-Security: max-age=63072000; includeSubDomains
+      reason: Created
+      json_body:
+        result:
+          size_bytes: '5881'
+          file_name: test
+          sys_mod_count: '0'
+          average_image_color: ''
+          image_width: ''
+          sys_updated_on: '2022-11-05 00:53:43'
+          sys_tags: ''
+          table_name: incident
+          sys_id: 41f9dad09783111084d57e121153af94
+          image_height: ''
+          sys_updated_by: admin
+          download_link: https://dev130168.service-now.com/api/now/attachment/41f9dad09783111084d57e121153af94/file
+          content_type: application/json
+          sys_created_on: '2022-11-05 00:53:43'
+          size_compressed: '4343'
+          compressed: 'true'
+          state: pending
+          table_sys_id: 1c741bd70b2322007518478d83673af3
+          chunk_size_bytes: '700000'
+          hash: 8671fa6613cd1c6e82c0e1d6b940ae0771d1d8b3f56019f8274ed501407ffc2a
+          sys_created_by: admin
+  type: object
+  properties:
+    status_code:
+      title: Status Code
+      examples:
+        - 201
+      type: number
+    response_headers:
+      title: Response Headers
+      examples:
+        - Server-Timing: sem_wait;dur=0, sesh_wait;dur=0
+          Content-Encoding: gzip
+          X-Is-Logged-In: 'true'
+          X-Transaction-ID: 89f9d2509783
+          Location: https://dev130168.service-now.com/api/now/attachment/41f9dad09783111084d57e121153af94/file
+          X-Content-Type-Options: nosniff
+          Pragma: no-store,no-cache
+          Cache-Control: no-cache,no-store,must-revalidate,max-age=-1
+          Expires: '0'
+          Content-Type: application/json;charset=UTF-8
+          Transfer-Encoding: chunked
+          Date: Sat, 05 Nov 2022 00:53:43 GMT
+          Keep-Alive: timeout=20
+          Connection: keep-alive
+          Server: ServiceNow
+          Set-Cookie: glide_user=; Max-Age=0; Expires=Thu, 01-Jan-1970 00:00:10 GMT;
+            Path=/; HttpOnly; SameSite=None; Secure, glide_user_session=; Max-Age=0;
+            Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/; HttpOnly; SameSite=None;
+            Secure, glide_user_route=glide.f6d1c4085a807931391acf9b7192b09e; Max-Age=2147483647;
+            Expires=Thu, 23-Nov-2090 04:07:50 GMT; Path=/; HttpOnly; SameSite=None;
+            Secure, glide_session_store=09F91ADC9743111084D57E121153AFDE; Max-Age=1800;
+            Expires=Sat, 05-Nov-2022 01:23:43 GMT; Path=/; HttpOnly; SameSite=None;
+            Secure
+          Strict-Transport-Security: max-age=63072000; includeSubDomains
+      type: object
+      properties:
+        Server-Timing:
+          title: Server Timing
+          examples:
+            - sem_wait;dur=0, sesh_wait;dur=0
+          type: string
+        Content-Encoding:
+          title: Content Encoding
+          examples:
+            - gzip
+          type: string
+        X-Is-Logged-In:
+          title: X Is Logged In
+          examples:
+            - 'true'
+          type: string
+        X-Transaction-ID:
+          title: X Transaction ID
+          examples:
+            - 89f9d2509783
+          type: string
+        Location:
+          title: Location
+          examples:
+            - https://dev130168.service-now.com/api/now/attachment/41f9dad09783111084d57e121153af94/file
+          type: string
+          format: uri-reference
+        X-Content-Type-Options:
+          title: X Content Type Options
+          examples:
+            - nosniff
+          type: string
+        Pragma:
+          title: Pragma
+          examples:
+            - no-store,no-cache
+          type: string
+        Cache-Control:
+          title: Cache Control
+          examples:
+            - no-cache,no-store,must-revalidate,max-age=-1
+          type: string
+        Expires:
+          title: Expires
+          examples:
+            - '0'
+          type: string
+        Content-Type:
+          title: Content Type
+          examples:
+            - application/json;charset=UTF-8
+          type: string
+        Transfer-Encoding:
+          title: Transfer Encoding
+          examples:
+            - chunked
+          type: string
+        Date:
+          title: Date
+          examples:
+            - Sat, 05 Nov 2022 00:53:43 GMT
+          type: string
+        Keep-Alive:
+          title: Keep Alive
+          examples:
+            - timeout=20
+          type: string
+        Connection:
+          title: Connection
+          examples:
+            - keep-alive
+          type: string
+        Server:
+          title: Server
+          examples:
+            - ServiceNow
+          type: string
+        Set-Cookie:
+          title: Set Cookie
+          examples:
+            - glide_user=; Max-Age=0; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/;
+              HttpOnly; SameSite=None; Secure, glide_user_session=; Max-Age=0; Expires=Thu,
+              01-Jan-1970 00:00:10 GMT; Path=/; HttpOnly; SameSite=None; Secure, glide_user_route=glide.f6d1c4085a807931391acf9b7192b09e;
+              Max-Age=2147483647; Expires=Thu, 23-Nov-2090 04:07:50 GMT; Path=/; HttpOnly;
+              SameSite=None; Secure, glide_session_store=09F91ADC9743111084D57E121153AFDE;
+              Max-Age=1800; Expires=Sat, 05-Nov-2022 01:23:43 GMT; Path=/; HttpOnly;
+              SameSite=None; Secure
+          type: string
+        Strict-Transport-Security:
+          title: Strict Transport Security
+          examples:
+            - max-age=63072000; includeSubDomains
+          type: string
+      required: []
+      additionalProperties: true
+    reason:
+      title: Reason
+      examples:
+        - Created
+      type: string
+    json_body:
+      title: JSON Body
+      examples:
+        - result:
+            size_bytes: '5881'
+            file_name: test
+            sys_mod_count: '0'
+            average_image_color: ''
+            image_width: ''
+            sys_updated_on: '2022-11-05 00:53:43'
+            sys_tags: ''
+            table_name: incident
+            sys_id: 41f9dad09783111084d57e121153af94
+            image_height: ''
+            sys_updated_by: admin
+            download_link: https://dev130168.service-now.com/api/now/attachment/41f9dad09783111084d57e121153af94/file
+            content_type: application/json
+            sys_created_on: '2022-11-05 00:53:43'
+            size_compressed: '4343'
+            compressed: 'true'
+            state: pending
+            table_sys_id: 1c741bd70b2322007518478d83673af3
+            chunk_size_bytes: '700000'
+            hash: 8671fa6613cd1c6e82c0e1d6b940ae0771d1d8b3f56019f8274ed501407ffc2a
+            sys_created_by: admin
+      type: object
+      properties:
+        result:
+          title: Result
+          examples:
+            - size_bytes: '5881'
+              file_name: test
+              sys_mod_count: '0'
+              average_image_color: ''
+              image_width: ''
+              sys_updated_on: '2022-11-05 00:53:43'
+              sys_tags: ''
+              table_name: incident
+              sys_id: 41f9dad09783111084d57e121153af94
+              image_height: ''
+              sys_updated_by: admin
+              download_link: https://dev130168.service-now.com/api/now/attachment/41f9dad09783111084d57e121153af94/file
+              content_type: application/json
+              sys_created_on: '2022-11-05 00:53:43'
+              size_compressed: '4343'
+              compressed: 'true'
+              state: pending
+              table_sys_id: 1c741bd70b2322007518478d83673af3
+              chunk_size_bytes: '700000'
+              hash: 8671fa6613cd1c6e82c0e1d6b940ae0771d1d8b3f56019f8274ed501407ffc2a
+              sys_created_by: admin
+          type: object
+          properties:
+            size_bytes:
+              title: Size Bytes
+              examples:
+                - '5881'
+              type: string
+            file_name:
+              title: File Name
+              examples:
+                - test
+              type: string
+            sys_mod_count:
+              title: Sys Mod Count
+              examples:
+                - '0'
+              type: string
+            average_image_color:
+              title: Average Image Color
+              examples:
+                - ''
+              type: string
+            image_width:
+              title: Image Width
+              examples:
+                - ''
+              type: string
+            sys_updated_on:
+              title: Sys Updated On
+              examples:
+                - '2022-11-05 00:53:43'
+              type: string
+            sys_tags:
+              title: Sys Tags
+              examples:
+                - ''
+              type: string
+            table_name:
+              title: Table Name
+              examples:
+                - incident
+              type: string
+            sys_id:
+              title: Sys ID
+              examples:
+                - 41f9dad09783111084d57e121153af94
+              type: string
+            image_height:
+              title: Image Height
+              examples:
+                - ''
+              type: string
+            sys_updated_by:
+              title: Sys Updated By
+              examples:
+                - admin
+              type: string
+            download_link:
+              title: Download Link
+              examples:
+                - https://dev130168.service-now.com/api/now/attachment/41f9dad09783111084d57e121153af94/file
+              type: string
+              format: uri-reference
+            content_type:
+              title: Content Type
+              examples:
+                - application/json
+              type: string
+            sys_created_on:
+              title: Sys Created On
+              examples:
+                - '2022-11-05 00:53:43'
+              type: string
+            size_compressed:
+              title: Size Compressed
+              examples:
+                - '4343'
+              type: string
+            compressed:
+              title: Compressed
+              examples:
+                - 'true'
+              type: string
+            state:
+              title: State
+              examples:
+                - pending
+              type: string
+            table_sys_id:
+              title: Table Sys ID
+              examples:
+                - 1c741bd70b2322007518478d83673af3
+              type: string
+            chunk_size_bytes:
+              title: Chunk Size Bytes
+              examples:
+                - '700000'
+              type: string
+            hash:
+              title: Hash
+              examples:
+                - 8671fa6613cd1c6e82c0e1d6b940ae0771d1d8b3f56019f8274ed501407ffc2a
+              type: string
+            sys_created_by:
+              title: Sys Created By
+              examples:
+                - admin
+              type: string
+          required: []
+          additionalProperties: true
+      required: []
+      additionalProperties: true
+  required: []
+  additionalProperties: true
+meta:
+  endpoint: api/now/attachment/file
+  method: POST

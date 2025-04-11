@@ -1,0 +1,66 @@
+schema: action/1
+title: Post Custom Endpoint
+name: post_custom_endpoint
+description: Executes a POST request to a custom endpoint in ServiceNow v2, specified
+  by the 'custom_endpoint' path parameter.
+inputs:
+  type: object
+  properties:
+    path_parameters:
+      title: Path Parameters
+      examples:
+        - custom_endpoint: table/sc_request
+      type: object
+      properties:
+        custom_endpoint:
+          title: Custom Endpoint
+          examples:
+            - table/sc_request
+          type: string
+      required:
+        - custom_endpoint
+      additionalProperties: true
+    parameters:
+      title: Parameters
+      examples:
+        - sysparm_display_value: true
+          sysparm_input_display_value: true
+      type: object
+      properties:
+        sysparm_display_value:
+          title: Sysparm Display Value
+          examples:
+            - true
+          type: boolean
+        sysparm_input_display_value:
+          title: Sysparm Input Display Value
+          examples:
+            - true
+          type: boolean
+      required: []
+      additionalProperties: true
+    json_body:
+      type: object
+      description: JSON Body
+      properties: {}
+      required: []
+      additionalProperties: true
+    data_body:
+      type: object
+      description: Data Body
+      properties: {}
+      required: []
+      additionalProperties: true
+  required:
+    - path_parameters
+  additionalProperties: true
+output:
+  examples:
+    - {}
+  type: object
+  properties: {}
+  required: []
+  additionalProperties: true
+meta:
+  endpoint: api/now/v2/{{custom_endpoint}}
+  method: POST

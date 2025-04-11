@@ -1,0 +1,103 @@
+schema: action/1
+title: ServiceNow Post Custom Action
+name: servicenow_post_custom_action
+description: Executes a custom action in ServiceNow using the 'mid_extension' path
+  parameter provided by the user.
+inputs:
+  type: object
+  properties:
+    path_parameters:
+      title: Path Parameters
+      type: object
+      properties:
+        mid_extension:
+          title: Mid Extension
+          type: string
+        end_extension:
+          title: End Extension
+          type: string
+      required:
+        - mid_extension
+        - end_extension
+      additionalProperties: true
+    json_body:
+      title: JSON Body
+      examples:
+        - comments: test
+      type: object
+      properties:
+        comments:
+          title: Comments
+          examples:
+            - test
+          type: string
+      required: []
+      additionalProperties: true
+    parameters:
+      description: URL Query Parameters
+      type: object
+      properties: {}
+      required: []
+      additionalProperties: true
+  required:
+    - path_parameters
+    - json_body
+  additionalProperties: true
+output:
+  examples:
+    - status_code: 200
+      response_headers:
+        content-length: '140'
+        content-type: application/json
+        Date: Mon, 2 Sep 2024 20:37:23 GMT
+      reason: OK
+      json_body: {}
+  type: object
+  properties:
+    status_code:
+      title: Status Code
+      examples:
+        - 200
+      type: number
+    response_headers:
+      title: Response Headers
+      examples:
+        - content-length: '140'
+          content-type: application/json
+          Date: Mon, 2 Sep 2024 20:37:23 GMT
+      type: object
+      properties:
+        content-length:
+          title: Content Length
+          examples:
+            - '140'
+          type: string
+        content-type:
+          title: Content Type
+          examples:
+            - application/json
+          type: string
+        Date:
+          title: Date
+          examples:
+            - Mon, 2 Sep 2024 20:37:23 GMT
+          type: string
+      required: []
+      additionalProperties: true
+    reason:
+      title: Reason
+      examples:
+        - OK
+      type: string
+    json_body:
+      title: JSON Body
+      type: object
+      properties: {}
+      required: []
+      additionalProperties: true
+  required: []
+  additionalProperties: true
+meta:
+  endpoint: api/{{mid_extension}}/v2/{{end_extension}}
+  method: POST
+  outputType: json

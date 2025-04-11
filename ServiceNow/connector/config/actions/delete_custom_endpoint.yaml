@@ -1,0 +1,81 @@
+schema: action/1
+title: Delete Custom Endpoint
+name: delete_custom_endpoint
+description: Removes a specified custom endpoint from ServiceNow using the provided
+  'custom_endpoint' path parameter.
+inputs:
+  type: object
+  properties:
+    path_parameters:
+      title: Path Parameters
+      examples:
+        - custom_endpoint: table/incident
+      type: object
+      properties:
+        custom_endpoint:
+          title: Custom Endpoint
+          examples:
+            - table/incident
+          type: string
+      required:
+        - custom_endpoint
+      additionalProperties: true
+    parameters:
+      type: object
+      description: URL Query Parameters
+      properties: {}
+      required: []
+      additionalProperties: true
+    json_body:
+      type: object
+      description: JSON Body
+      properties: {}
+      required: []
+      additionalProperties: true
+    data_body:
+      type: object
+      description: Data Body
+      properties: {}
+      required: []
+      additionalProperties: true
+  required:
+    - path_parameters
+output:
+  examples:
+    - status_code: 200
+      response_headers: {}
+      reason: OK
+      json_body: {}
+  type: object
+  properties:
+    status_code:
+      title: Status Code
+      examples:
+        - 200
+      type: number
+    response_headers:
+      title: Response Headers
+      examples:
+        - {}
+      type: object
+      properties: {}
+      required: []
+      additionalProperties: true
+    reason:
+      title: Reason
+      examples:
+        - OK
+      type: string
+    json_body:
+      title: JSON Body
+      examples:
+        - {}
+      type: object
+      properties: {}
+      required: []
+      additionalProperties: true
+  required: []
+  additionalProperties: true
+meta:
+  endpoint: api/now/v2/{{custom_endpoint}}
+  method: DELETE
