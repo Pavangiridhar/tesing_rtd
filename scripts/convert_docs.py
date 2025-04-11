@@ -6,8 +6,10 @@ from pathlib import Path
 
 OUTPUT_DIR = Path("output/docs/Connectors")
 
+
 def safe_mkdir(path):
     os.makedirs(path, exist_ok=True)
+
 
 def convert_yaml_to_markdown(yaml_path, out_path):
     with open(yaml_path, "r", encoding="utf-8") as f:
@@ -52,9 +54,12 @@ def convert_yaml_to_markdown(yaml_path, out_path):
                 is_required = "Yes" if key in required else "No"
                 md_lines.append(f"| {key} | {dtype} | {is_required} |")
 
-    md_lines.append("## Output\n")
+    output = data.get("output", {})
+    output_props = output.get("properties", {})
+    example = output.get("examples") or output.get("example")
+    if output_props or example:
+        md_lines.append("## Output\n")
 
-    example = data.get("output", {}).get("examples") or data.get("output", {}).get("example")
     if example:
         md_lines.append("### Example\n")
         md_lines.append("```json")
@@ -64,27 +69,25 @@ def convert_yaml_to_markdown(yaml_path, out_path):
             md_lines.append(str(example))
         md_lines.append("```")
 
-    output = data.get("output", {}).get("properties", {})
-    if output:
-        output_fields = [key for key in output if key != "response_headers"]
-        if output_fields:
-            has_description = any(output[key].get("description") for key in output_fields)
-            md_lines.append("### Output Parameters\n")
-            if has_description:
-                md_lines.append("| Name | Type | Description |")
-                md_lines.append("|------|------|-------------|")
-                for key in output_fields:
-                    dtype = output[key].get("type", "")
-                    desc = output[key].get("description", "")
-                    md_lines.append(f"| {key} | {dtype} | {desc} |")
-            else:
-                md_lines.append("| Name | Type |")
-                md_lines.append("|------|------|")
-                for key in output_fields:
-                    dtype = output[key].get("type", "")
-                    md_lines.append(f"| {key} | {dtype} |")
+    output_fields = [key for key in output_props if key != "response_headers"]
+    if output_fields:
+        has_description = any(output_props[key].get("description") for key in output_fields)
+        md_lines.append("### Output Parameters\n")
+        if has_description:
+            md_lines.append("| Name | Type | Description |")
+            md_lines.append("|------|------|-------------|")
+            for key in output_fields:
+                dtype = output_props[key].get("type", "")
+                desc = output_props[key].get("description", "")
+                md_lines.append(f"| {key} | {dtype} | {desc} |")
+        else:
+            md_lines.append("| Name | Type |")
+            md_lines.append("|------|------|")
+            for key in output_fields:
+                dtype = output_props[key].get("type", "")
+                md_lines.append(f"| {key} | {dtype} |")
 
-    headers = output.get("response_headers", {}).get("properties", {})
+    headers = output_props.get("response_headers", {}).get("properties", {})
     if headers:
         has_desc = any(headers[key].get("description") for key in headers)
         md_lines.append("## Response Headers\n")
@@ -102,7 +105,7 @@ def convert_yaml_to_markdown(yaml_path, out_path):
                 dtype = value.get("type", "")
                 md_lines.append(f"| {key} | {dtype} |")
 
-    json_body = output.get("json_body", {}).get("properties", {})
+    json_body = output_props.get("json_body", {}).get("properties", {})
     messages = json_body.get("messages", {}).get("items", {}).get("properties", {})
     if messages:
         md_lines.append("## Error Handling\n")
@@ -131,6 +134,7 @@ def convert_yaml_to_markdown(yaml_path, out_path):
         f.write("\n".join(md_lines))
     print(f"[✔] Wrote: {out_path}")
 
+
 def process_connector(connector_dir):
     connector_name = Path(connector_dir).name
     print(f"🔧 Processing connector: {connector_name}")
@@ -150,20 +154,24 @@ def process_connector(connector_dir):
     out_actions = out_root / "Actions"
     out_configs = out_root / "Configurations"
     safe_mkdir(out_actions)
-    safe_mkdir(out_configs)
 
     for yml in sorted(list(actions_dir.glob("*.yml")) + list(actions_dir.glob("*.yaml"))):
         out_md = out_actions / f"{yml.stem}.md"
         convert_yaml_to_markdown(yml, out_md)
 
-    for yml in sorted(list(configs_dir.glob("*.yml")) + list(configs_dir.glob("*.yaml"))):
-        out_md = out_configs / f"{yml.stem}.md"
-        convert_yaml_to_markdown(yml, out_md)
+    config_files = sorted(list(configs_dir.glob("*.yml")) + list(configs_dir.glob("*.yaml")))
+    if config_files:
+        safe_mkdir(out_configs)
+        for yml in config_files:
+            out_md = out_configs / f"{yml.stem}.md"
+            convert_yaml_to_markdown(yml, out_md)
+
 
 def main():
     for item in sorted(Path(".").iterdir()):
         if item.is_dir() and (item / "connector").exists():
             process_connector(item)
+
 
 if __name__ == "__main__":
     main()
