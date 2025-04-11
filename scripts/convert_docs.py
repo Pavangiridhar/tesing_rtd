@@ -5,9 +5,23 @@ from pathlib import Path
 
 OUTPUT_DIR = Path("output/docs/Connectors")
 SUMMARY_FILE = Path("output/docs/summary.md")
+CONFIG_INDEX_FILE = Path("output/docs/configurations.md")
+ACTION_INDEX_FILE = Path("output/docs/actions.md")
+
+# Optional connector categories
+CONNECTOR_CATEGORIES = {
+    "FortiAnalyzer": "Security",
+    "Proofpoint": "Security",
+    "ServiceNow": "ITSM"
+}
+
+all_actions = []
+all_configs = []
+
 
 def safe_mkdir(path):
     os.makedirs(path, exist_ok=True)
+
 
 def convert_yaml_to_markdown(yaml_path, out_path):
     with open(yaml_path, "r", encoding="utf-8") as f:
@@ -105,6 +119,7 @@ def convert_yaml_to_markdown(yaml_path, out_path):
         f.write("\n".join(md_lines))
     print(f"[✔] Wrote: {out_path}")
 
+
 def process_connector(connector_dir):
     connector_name = Path(connector_dir).name
     print(f"🔧 Processing connector: {connector_name}")
@@ -126,41 +141,73 @@ def process_connector(connector_dir):
     safe_mkdir(out_configs)
 
     for yml in list(actions_dir.glob("*.yml")) + list(actions_dir.glob("*.yaml")):
-        convert_yaml_to_markdown(yml, out_actions / f"{yml.stem}.md")
+        out_md = out_actions / f"{yml.stem}.md"
+        convert_yaml_to_markdown(yml, out_md)
+        all_actions.append((connector_name, yml.stem, out_md))
 
     for yml in list(configs_dir.glob("*.yml")) + list(configs_dir.glob("*.yaml")):
-        convert_yaml_to_markdown(yml, out_configs / f"{yml.stem}.md")
+        out_md = out_configs / f"{yml.stem}.md"
+        convert_yaml_to_markdown(yml, out_md)
+        all_configs.append((connector_name, yml.stem, out_md))
+
 
 def generate_summary_md():
     print("📘 Generating summary.md")
     lines = ["# Connectors"]
+
+    categorized = {}
     for connector in sorted(OUTPUT_DIR.iterdir()):
         if not connector.is_dir():
             continue
-        lines.append(f"- [{connector.name}](Connectors/{connector.name}/overview.md)")
+        name = connector.name
+        category = CONNECTOR_CATEGORIES.get(name, "Uncategorized")
+        categorized.setdefault(category, []).append(name)
 
-        configs_dir = connector / "Configurations"
-        if configs_dir.exists():
-            lines.append(f"  - Configurations")
-            for file in sorted(configs_dir.glob("*.md")):
-                lines.append(f"    - [{file.stem}](Connectors/{connector.name}/Configurations/{file.name})")
+    for category, connectors in sorted(categorized.items()):
+        lines.append(f"\n## {category}")
+        for connector_name in sorted(connectors):
+            lines.append(f"### {connector_name}")
+            lines.append(f"- [Overview](Connectors/{connector_name}/overview.md)")
 
-        actions_dir = connector / "Actions"
-        if actions_dir.exists():
-            lines.append(f"  - Actions")
-            for file in sorted(actions_dir.glob("*.md")):
-                lines.append(f"    - [{file.stem}](Connectors/{connector.name}/Actions/{file.name})")
+            configs_dir = OUTPUT_DIR / connector_name / "Configurations"
+            if configs_dir.exists():
+                lines.append("#### Configurations")
+                for file in sorted(configs_dir.glob("*.md")):
+                    lines.append(f"- [{file.stem}](Connectors/{connector_name}/Configurations/{file.name})")
+
+            actions_dir = OUTPUT_DIR / connector_name / "Actions"
+            if actions_dir.exists():
+                lines.append("#### Actions")
+                for file in sorted(actions_dir.glob("*.md")):
+                    lines.append(f"- [{file.stem}](Connectors/{connector_name}/Actions/{file.name})")
 
     safe_mkdir(SUMMARY_FILE.parent)
     with open(SUMMARY_FILE, "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
     print(f"[✔] Wrote: {SUMMARY_FILE}")
 
+
+def generate_action_and_config_indexes():
+    safe_mkdir(CONFIG_INDEX_FILE.parent)
+
+    with open(ACTION_INDEX_FILE, "w", encoding="utf-8") as f:
+        f.write("# All Actions\n")
+        for connector, name, path in sorted(all_actions):
+            f.write(f"- [{connector}: {name}]({path.relative_to('output/docs')})\n")
+
+    with open(CONFIG_INDEX_FILE, "w", encoding="utf-8") as f:
+        f.write("# All Configurations\n")
+        for connector, name, path in sorted(all_configs):
+            f.write(f"- [{connector}: {name}]({path.relative_to('output/docs')})\n")
+
+
 def main():
     for item in Path(".").iterdir():
         if item.is_dir() and (item / "connector").exists():
             process_connector(item)
     generate_summary_md()
+    generate_action_and_config_indexes()
+
 
 if __name__ == "__main__":
     main()
