@@ -16,12 +16,22 @@ def convert_yaml_to_markdown(yaml_path, out_path):
 
     md_lines = []
 
-    # Title and description
+    # Title and Description
     title = data.get("title", yaml_path.stem)
     description = data.get("description", "")
     md_lines.append(f"# {title}\n")
     if description:
         md_lines.append(f"**Description**: {description}\n")
+
+    # Endpoint
+    endpoint = data.get("meta", {}).get("endpoint", "")
+    method = data.get("meta", {}).get("method", "")
+    if endpoint or method:
+        md_lines.append("## Endpoint\n")
+        if endpoint:
+            md_lines.append(f"- **URL:** `{endpoint}`")
+        if method:
+            md_lines.append(f"- **Method:** `{method}`")
 
     # Inputs
     inputs = data.get("inputs", {}).get("properties", {})
@@ -36,18 +46,21 @@ def convert_yaml_to_markdown(yaml_path, out_path):
             is_required = "Yes" if key in required else "No"
             md_lines.append(f"| {key} | {dtype} | {desc} | {is_required} |")
 
+    # Output
+    md_lines.append("## Output\n")
+
     # Output Example
     example = data.get("output", {}).get("example")
     if example:
-        md_lines.append("\n## Output Example\n")
+        md_lines.append("### Example\n")
         md_lines.append("```json")
         md_lines.append(yaml.dump(example, default_flow_style=False))
-        md_lines.append("```\n")
+        md_lines.append("```")
 
     # Output Parameters
     output = data.get("output", {}).get("properties", {})
     if output:
-        md_lines.append("\n## Output Parameters\n")
+        md_lines.append("### Output Parameters\n")
         md_lines.append("| Name | Type | Description |")
         md_lines.append("|------|------|-------------|")
         for key, value in output.items():
@@ -60,7 +73,7 @@ def convert_yaml_to_markdown(yaml_path, out_path):
     # Response Headers
     headers = output.get("response_headers", {}).get("properties", {})
     if headers:
-        md_lines.append("\n## Response Headers\n")
+        md_lines.append("## Response Headers\n")
         md_lines.append("| Header | Type | Description |")
         md_lines.append("|--------|------|-------------|")
         for key, value in headers.items():
@@ -69,11 +82,23 @@ def convert_yaml_to_markdown(yaml_path, out_path):
             md_lines.append(f"| {key} | {dtype} | {desc} |")
 
     # Error Handling
-    if output.get("json_body", {}).get("properties", {}).get("messages"):
-        md_lines.append("\n## Error Handling\n")
-        md_lines.append("The response may include error messages under the `messages` field in the JSON body.")
+    json_body = output.get("json_body", {}).get("properties", {})
+    messages = json_body.get("messages", {}).get("items", {}).get("properties", {})
+    if messages:
+        md_lines.append("## Error Handling\n")
+        md_lines.append("### Common Error Responses\n")
+        md_lines.append("| Status Code | Message | Description | Example |")
+        md_lines.append("|-------------|---------|-------------|---------|")
+        md_lines.append("| 400 | Bad Request | The request was invalid or cannot be processed. | Invalid search ID or parameters. |")
+        md_lines.append("| 401 | Unauthorized | Missing or incorrect authentication. | Invalid API token. |")
+        md_lines.append("| 403 | Forbidden | Access to the resource is denied. | No permissions for search. |")
+        md_lines.append("| 404 | Not Found | The requested item does not exist. | Search ID not found. |")
+        md_lines.append("| 500 | Internal Server Error | A server error occurred. | Unexpected failure in Splunk. |")
 
-    # Write to file
+        md_lines.append("\n### Error Example\n")
+        md_lines.append("```json\n{\n  \"messages\": [\n    {\n      \"type\": \"ERROR\",\n      \"text\": \"Search ID not found.\"\n    }\n  ],\n  \"status_code\": 404,\n  \"reason\": \"Not Found\"\n}\n```")
+
+    # Write output
     safe_mkdir(out_path.parent)
     with open(out_path, "w", encoding="utf-8") as f:
         f.write("\n".join(md_lines))
@@ -87,15 +112,13 @@ def process_connector(connector_dir):
     out_root = OUTPUT_DIR / connector_name
     overview_src = Path(connector_dir) / "docs" / "README.md"
 
-    # Copy overview
     if overview_src.exists():
         safe_mkdir(out_root)
         shutil.copy(overview_src, out_root / "overview.md")
         print(f"[✔] Copied overview.md for {connector_name}")
 
-    # Convert YAMLs
     actions_dir = Path(connector_dir) / "connector" / "config" / "actions"
-    assets_dir = Path(connector_dir) / "connector" / "config" / "assets"
+    configs_dir = Path(connector_dir) / "connector" / "config" / "assets"
 
     out_actions = out_root / "Actions"
     out_configs = out_root / "Configurations"
@@ -103,19 +126,14 @@ def process_connector(connector_dir):
     safe_mkdir(out_configs)
 
     for yml in list(actions_dir.glob("*.yml")) + list(actions_dir.glob("*.yaml")):
-        print(f"[→] Found action YAML: {yml}")
-        out_file = out_actions / f"{yml.stem}.md"
-        convert_yaml_to_markdown(yml, out_file)
+        convert_yaml_to_markdown(yml, out_actions / f"{yml.stem}.md")
 
-    for yml in list(assets_dir.glob("*.yml")) + list(assets_dir.glob("*.yaml")):
-        print(f"[→] Found config YAML: {yml}")
-        out_file = out_configs / f"{yml.stem}.md"
-        convert_yaml_to_markdown(yml, out_file)
+    for yml in list(configs_dir.glob("*.yml")) + list(configs_dir.glob("*.yaml")):
+        convert_yaml_to_markdown(yml, out_configs / f"{yml.stem}.md")
 
 
 def main():
-    root = Path(".")
-    for item in root.iterdir():
+    for item in Path(".").iterdir():
         if item.is_dir() and (item / "connector").exists():
             process_connector(item)
 
