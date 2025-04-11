@@ -1,0 +1,139 @@
+schema: action/1
+title: Siem Messages Delivered
+name: siem_messages_delivered
+description: Fetch events for messages delivered within a specified time frame that
+  contained a known threat, requiring specific parameters.
+inputs:
+  type: object
+  properties:
+    parameters:
+      title: Parameters
+      description: One of the following three query parameters describing the desired
+        time range for the data must be supplied with each request interval, sinceSeconds,
+        sinceTime.
+      examples:
+        - interval: PT30M/2023-10-15T02:30:00Z
+          sinceSeconds: 30
+          sinceTime: '1'
+          format: JSON
+          threatType: url
+          threatStatus: active
+      type: object
+      properties:
+        interval:
+          title: Interval
+          examples:
+            - PT30M/2023-10-15T02:30:00Z
+          type: string
+        sinceSeconds:
+          title: Since Seconds
+          examples:
+            - 30
+          type: number
+        sinceTime:
+          title: Since Time
+          examples:
+            - '1'
+          type: string
+        format:
+          title: Format
+          examples:
+            - JSON
+          type: string
+        threatType:
+          title: Threat Type
+          examples:
+            - url
+          type: string
+        threatStatus:
+          title: Threat Status
+          examples:
+            - active
+          type: string
+      required: []
+      additionalProperties: true
+  required:
+    - parameters
+  additionalProperties: true
+output:
+  examples:
+    - status_code: 200
+      response_headers:
+        Date: Mon, 16 Oct 2023 09:34:21 GMT
+        Content-Type: application/json
+        Transfer-Encoding: chunked
+        Connection: keep-alive
+        Vary: Accept-Encoding, User-Agent
+        Content-Encoding: gzip
+        Strict-Transport-Security: max-age=15724800; includeSubDomains
+      reason: OK
+      response_text: ''
+  type: object
+  properties:
+    status_code:
+      title: Status Code
+      examples:
+        - 200
+      type: number
+    response_headers:
+      title: Response Headers
+      examples:
+        - Date: Mon, 16 Oct 2023 09:34:21 GMT
+          Content-Type: application/json
+          Transfer-Encoding: chunked
+          Connection: keep-alive
+          Vary: Accept-Encoding, User-Agent
+          Content-Encoding: gzip
+          Strict-Transport-Security: max-age=15724800; includeSubDomains
+      type: object
+      properties:
+        Date:
+          title: Date
+          examples:
+            - Mon, 16 Oct 2023 09:34:21 GMT
+          type: string
+        Content-Type:
+          title: Content-Type
+          examples:
+            - application/json
+          type: string
+        Transfer-Encoding:
+          title: Transfer-Encoding
+          examples:
+            - chunked
+          type: string
+        Connection:
+          title: Connection
+          examples:
+            - keep-alive
+          type: string
+        Vary:
+          title: Vary
+          examples:
+            - Accept-Encoding, User-Agent
+          type: string
+        Content-Encoding:
+          title: Content-Encoding
+          examples:
+            - gzip
+          type: string
+        Strict-Transport-Security:
+          title: Strict-Transport-Security
+          examples:
+            - max-age=15724800; includeSubDomains
+          type: string
+      required: []
+      additionalProperties: true
+    reason:
+      title: Reason
+      examples:
+        - OK
+      type: string
+    response_text:
+      title: Response Text
+      type: string
+  required: []
+  additionalProperties: true
+meta:
+  endpoint: /v2/siem/messages/delivered
+  method: GET

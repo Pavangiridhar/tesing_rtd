@@ -1,0 +1,25 @@
+vendor: ProofPoint
+product: PointPoint
+name: proofpoint
+schema: connector/1
+author: Swimlane
+bugs: ''
+iconImage: ../image/logo.png
+description: Enhance security operations with proofpoint's advanced threat intelligence.
+homepage: https://swimlane.com
+keywords:
+  - Email & Email Security
+license: AGPL-3.0
+meta:
+  imageRepository: quay.io/swimlane-connectors/proofpoint
+  private: false
+  publishConfig:
+    access: public
+  buildConfig:
+    template: python_311_definition
+repository: https://github.com/swimlane/t_proofpoint
+title: ProofPoint
+version: 1.1.1
+runConfig:
+  inputs:
+    type: stdin

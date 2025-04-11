@@ -1,0 +1,111 @@
+schema: action/1
+title: Siem Clicks Permitted
+name: siem_clicks_permitted
+description: Fetch events for clicks to malicious URLs that were permitted within
+  a specified time period in ProofPoint.
+inputs:
+  type: object
+  properties:
+    parameters:
+      title: Parameters
+      description: One of the following three query parameters describing the desired
+        time range for the data must be supplied with each request interval, sinceSeconds,
+        sinceTime.
+      examples:
+        - interval: PT30M/2023-10-11T12:30:00Z
+          sinceSeconds: 5
+          sinceTime: '3'
+          format: JSON
+          threatType: url
+          threatStatus: active
+      type: object
+      properties:
+        interval:
+          title: Interval
+          examples:
+            - PT30M/2023-10-11T12:30:00Z
+          type: string
+        sinceSeconds:
+          title: Since Seconds
+          examples:
+            - 5
+          type: number
+        sinceTime:
+          title: Since Time
+          examples:
+            - '3'
+          type: string
+        format:
+          title: Format
+          examples:
+            - JSON
+          type: string
+        threatType:
+          title: Threat Type
+          examples:
+            - url
+          type: string
+        threatStatus:
+          title: Threat Status
+          examples:
+            - active
+          type: string
+      required: []
+      additionalProperties: true
+  required:
+    - parameters
+  additionalProperties: true
+output:
+  examples:
+    - status_code: 204
+      response_headers:
+        Date: Mon, 16 Oct 2023 09:27:36 GMT
+        Connection: keep-alive
+        Strict-Transport-Security: max-age=15724800; includeSubDomains
+      reason: No Content
+      response_text: ''
+  type: object
+  properties:
+    status_code:
+      title: Status Code
+      examples:
+        - 204
+      type: number
+    response_headers:
+      title: Response Headers
+      examples:
+        - Date: Mon, 16 Oct 2023 09:27:36 GMT
+          Connection: keep-alive
+          Strict-Transport-Security: max-age=15724800; includeSubDomains
+      type: object
+      properties:
+        Date:
+          title: Date
+          examples:
+            - Mon, 16 Oct 2023 09:27:36 GMT
+          type: string
+        Connection:
+          title: Connection
+          examples:
+            - keep-alive
+          type: string
+        Strict-Transport-Security:
+          title: Strict-Transport-Security
+          examples:
+            - max-age=15724800; includeSubDomains
+          type: string
+      required: []
+      additionalProperties: true
+    reason:
+      title: Reason
+      examples:
+        - No Content
+      type: string
+    response_text:
+      title: Response Text
+      type: string
+  required: []
+  additionalProperties: true
+meta:
+  endpoint: /v2/siem/clicks/permitted
+  method: GET

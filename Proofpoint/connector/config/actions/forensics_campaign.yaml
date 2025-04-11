@@ -1,0 +1,179 @@
+schema: action/1
+title: Forensics Campaign
+name: forensics_campaign
+description: Retrieve aggregate forensics data for a specified campaign in ProofPoint
+  using the campaignId parameter.
+inputs:
+  type: object
+  properties:
+    parameters:
+      title: Parameters
+      examples:
+        - campaignId: e144426d-7bcd-4695-98a7-c9f6551f3d48
+      type: object
+      properties:
+        campaignId:
+          title: Campaign ID
+          examples:
+            - e144426d-7bcd-4695-98a7-c9f6551f3d48
+          type: string
+      required:
+        - campaignId
+      additionalProperties: true
+  required:
+    - parameters
+  additionalProperties: true
+output:
+  examples:
+    - status_code: 200
+      response_headers:
+        Date: Wed, 18 Oct 2023 13:42:53 GMT
+        Content-Type: application/json
+        Content-Length: '188'
+        Connection: keep-alive
+        X-Content-Type-Options: nosniff
+        Vary: Accept-Encoding, User-Agent
+        Content-Encoding: gzip
+        Strict-Transport-Security: max-age=15724800; includeSubDomains
+      reason: OK
+      json_body:
+        generated: '2023-10-18T13:42:53.056Z'
+        reports:
+          - scope: CAMPAIGN
+            id: e144426d-7bcd-4695-98a7-c9f6551f3d48
+            name: Ursnif "2000" | US Targeting | URLs | 3 July 2019
+            forensics: []
+  type: object
+  properties:
+    status_code:
+      title: Status Code
+      examples:
+        - 200
+      type: number
+    response_headers:
+      title: Response Headers
+      examples:
+        - Date: Wed, 18 Oct 2023 13:42:53 GMT
+          Content-Type: application/json
+          Content-Length: '188'
+          Connection: keep-alive
+          X-Content-Type-Options: nosniff
+          Vary: Accept-Encoding, User-Agent
+          Content-Encoding: gzip
+          Strict-Transport-Security: max-age=15724800; includeSubDomains
+      type: object
+      properties:
+        Date:
+          title: Date
+          examples:
+            - Wed, 18 Oct 2023 13:42:53 GMT
+          type: string
+        Content-Type:
+          title: Content-Type
+          examples:
+            - application/json
+          type: string
+        Content-Length:
+          title: Content-Length
+          examples:
+            - '188'
+          type: string
+        Connection:
+          title: Connection
+          examples:
+            - keep-alive
+          type: string
+        X-Content-Type-Options:
+          title: X-Content-Type-Options
+          examples:
+            - nosniff
+          type: string
+        Vary:
+          title: Vary
+          examples:
+            - Accept-Encoding, User-Agent
+          type: string
+        Content-Encoding:
+          title: Content-Encoding
+          examples:
+            - gzip
+          type: string
+        Strict-Transport-Security:
+          title: Strict-Transport-Security
+          examples:
+            - max-age=15724800; includeSubDomains
+          type: string
+      required: []
+      additionalProperties: true
+    reason:
+      title: Reason
+      examples:
+        - OK
+      type: string
+    json_body:
+      title: JSON Body
+      examples:
+        - generated: '2023-10-18T13:42:53.056Z'
+          reports:
+            - scope: CAMPAIGN
+              id: e144426d-7bcd-4695-98a7-c9f6551f3d48
+              name: Ursnif "2000" | US Targeting | URLs | 3 July 2019
+              forensics: []
+      type: object
+      properties:
+        generated:
+          title: Generated
+          examples:
+            - '2023-10-18T13:42:53.056Z'
+          type: string
+          format: date-time
+        reports:
+          title: Reports
+          examples:
+            - - scope: CAMPAIGN
+                id: e144426d-7bcd-4695-98a7-c9f6551f3d48
+                name: Ursnif "2000" | US Targeting | URLs | 3 July 2019
+                forensics: []
+          type: array
+          items:
+            type: object
+            properties:
+              scope:
+                title: Scope
+                examples:
+                  - CAMPAIGN
+                type: string
+              id:
+                title: ID
+                examples:
+                  - e144426d-7bcd-4695-98a7-c9f6551f3d48
+                type: string
+              name:
+                title: Name
+                examples:
+                  - Ursnif "2000" | US Targeting | URLs | 3 July 2019
+                type: string
+              forensics:
+                title: Forensics
+                type: array
+                items:
+                  additionalProperties: false
+                  contentDisposition: attachment
+                  type: object
+                  required:
+                    - file_name
+                    - file
+                  properties:
+                    file_name:
+                      type: string
+                    file:
+                      type: string
+                      format: binary
+            required: []
+      required: []
+      additionalProperties: true
+  required: []
+  additionalProperties: true
+meta:
+  endpoint: /v2/forensics
+  method: GET
