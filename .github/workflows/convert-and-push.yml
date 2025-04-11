@@ -28,16 +28,15 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-      
+
           git clone https://github.com/swimlane/techpubs-knowledgecenter.git temp-docs
-          mkdir -p temp-docs/docs
-          cp -r output/docs/* temp-docs/docs/
-      
+
+          mkdir -p temp-docs/docs/Connectors
+          cp -r output/docs/Connectors/* temp-docs/docs/Connectors/
+
           cd temp-docs
           git add .
           git commit -m "Automated doc update from tesing_rtd" || echo "Nothing to commit"
           git push origin main
         env:
-         GITHUB_TOKEN: ${{ secrets.TECHPUBS_TOKEN }}
-
-
+          GITHUB_TOKEN: ${{ secrets.TECHPUBS_TOKEN }}
