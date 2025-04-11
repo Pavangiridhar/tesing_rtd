@@ -29,9 +29,9 @@ jobs:
     - name: Push to Techpubs Repo
       uses: ad-m/github-push-action@master
       with:
-        branch: main
-        directory: docs
-        repository: swimlane/techpubs-knowledgecenter
         github_token: ${{ secrets.TECHPUBS_TOKEN }}
+        branch: main
+        directory: output
+        repository: swimlane/techpubs-knowledgecenter
 
 
