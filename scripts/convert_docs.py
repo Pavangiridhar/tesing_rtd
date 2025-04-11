@@ -8,13 +8,6 @@ SUMMARY_FILE = Path("output/docs/summary.md")
 CONFIG_INDEX_FILE = Path("output/docs/configurations.md")
 ACTION_INDEX_FILE = Path("output/docs/actions.md")
 
-# Optional connector categories
-CONNECTOR_CATEGORIES = {
-    "FortiAnalyzer": "Security",
-    "Proofpoint": "Security",
-    "ServiceNow": "ITSM"
-}
-
 all_actions = []
 all_configs = []
 
@@ -160,31 +153,24 @@ def generate_summary_md():
     print("📘 Generating summary.md")
     lines = ["# Connectors"]
 
-    categorized = {}
     for connector in sorted(OUTPUT_DIR.iterdir()):
         if not connector.is_dir():
             continue
         name = connector.name
-        category = CONNECTOR_CATEGORIES.get(name, "Uncategorized")
-        categorized.setdefault(category, []).append(name)
+        lines.append(f"\n## {name}")
+        lines.append(f"- [Overview](Connectors/{name}/overview.md)")
 
-    for category, connectors in sorted(categorized.items()):
-        lines.append(f"\n## {category}")
-        for connector_name in sorted(connectors):
-            lines.append(f"- 📁 **{connector_name}**")
-            lines.append(f"  - [Overview](Connectors/{connector_name}/overview.md)")
+        configs_dir = OUTPUT_DIR / name / "Configurations"
+        if configs_dir.exists():
+            lines.append("### Configurations")
+            for file in sorted(configs_dir.glob("*.md")):
+                lines.append(f"- [{file.stem}](Connectors/{name}/Configurations/{file.name})")
 
-            configs_dir = OUTPUT_DIR / connector_name / "Configurations"
-            if configs_dir.exists():
-                lines.append("  - **Configurations**")
-                for file in sorted(configs_dir.glob("*.md")):
-                    lines.append(f"    - [{file.stem}](Connectors/{connector_name}/Configurations/{file.name})")
-
-            actions_dir = OUTPUT_DIR / connector_name / "Actions"
-            if actions_dir.exists():
-                lines.append("  - **Actions**")
-                for file in sorted(actions_dir.glob("*.md")):
-                    lines.append(f"    - [{file.stem}](Connectors/{connector_name}/Actions/{file.name})")
+        actions_dir = OUTPUT_DIR / name / "Actions"
+        if actions_dir.exists():
+            lines.append("### Actions")
+            for file in sorted(actions_dir.glob("*.md")):
+                lines.append(f"- [{file.stem}](Connectors/{name}/Actions/{file.name})")
 
     safe_mkdir(SUMMARY_FILE.parent)
     with open(SUMMARY_FILE, "w", encoding="utf-8") as f:
