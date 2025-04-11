@@ -1,0 +1,36 @@
+name: Convert and Push Connector Docs
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  convert-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Source Repo
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        pip install pyyaml jinja2
+
+    - name: Convert connectors to markdown
+      run: |
+        python .github/scripts/convert_docs.py
+
+    - name: Push to Techpubs Repo
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.PUSH_TOKEN }}
+        repository: swimlane/techpubs-knowledgecenter
+        branch: main
+        directory: output
+        force: true
