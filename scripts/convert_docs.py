@@ -95,7 +95,7 @@ def process_connector(connector_dir):
 
     # Convert YAMLs
     actions_dir = Path(connector_dir) / "connector" / "config" / "actions"
-    configs_dir = Path(connector_dir) / "connector" / "config" / "assets"
+    assets_dir = Path(connector_dir) / "connector" / "config" / "assets"
 
     out_actions = out_root / "Actions"
     out_configs = out_root / "Configurations"
@@ -103,14 +103,15 @@ def process_connector(connector_dir):
     safe_mkdir(out_configs)
 
     for yml in list(actions_dir.glob("*.yml")) + list(actions_dir.glob("*.yaml")):
-    print(f"[→] Found action YAML: {yml}")
-    out_file = out_actions / f"{yml.stem}.md"
-    convert_yaml_to_markdown(yml, out_file)
+        print(f"[→] Found action YAML: {yml}")
+        out_file = out_actions / f"{yml.stem}.md"
+        convert_yaml_to_markdown(yml, out_file)
 
     for yml in list(assets_dir.glob("*.yml")) + list(assets_dir.glob("*.yaml")):
-    print(f"[→] Found config YAML: {yml}")
-    out_file = out_configs / f"{yml.stem}.md"
-    convert_yaml_to_markdown(yml, out_file)
+        print(f"[→] Found config YAML: {yml}")
+        out_file = out_configs / f"{yml.stem}.md"
+        convert_yaml_to_markdown(yml, out_file)
+
 
 def main():
     root = Path(".")
