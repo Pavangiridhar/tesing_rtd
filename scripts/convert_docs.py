@@ -1,20 +1,13 @@
 import os
 import yaml
+import json
 import shutil
 from pathlib import Path
-import json
 
 OUTPUT_DIR = Path("output/docs/Connectors")
 
-
 def safe_mkdir(path):
     os.makedirs(path, exist_ok=True)
-
-def format_json_block(example_data):
-    try:
-        return json.dumps(example_data, indent=4)
-    except Exception:
-        return yaml.dump(example_data, default_flow_style=False)
 
 def convert_yaml_to_markdown(yaml_path, out_path):
     with open(yaml_path, "r", encoding="utf-8") as f:
@@ -51,24 +44,26 @@ def convert_yaml_to_markdown(yaml_path, out_path):
 
     md_lines.append("## Output\n")
 
-    example = data.get("output", {}).get("example") or data.get("output", {}).get("examples")
+    example = data.get("output", {}).get("example")
     if example:
         md_lines.append("### Example\n")
         md_lines.append("```json")
-        md_lines.append(format_json_block(example))
+        md_lines.append(json.dumps(example, indent=2))
         md_lines.append("```")
 
     output = data.get("output", {}).get("properties", {})
     if output:
+        filtered_keys = set()
         md_lines.append("### Output Parameters\n")
         md_lines.append("| Name | Type | Description |")
         md_lines.append("|------|------|-------------|")
         for key, value in output.items():
-            if key == "response_headers":
+            if key in filtered_keys or key == "response_headers":
                 continue
             dtype = value.get("type", "")
             desc = value.get("description", "")
             md_lines.append(f"| {key} | {dtype} | {desc} |")
+            filtered_keys.add(key)
 
     headers = output.get("response_headers", {}).get("properties", {})
     if headers:
@@ -80,30 +75,29 @@ def convert_yaml_to_markdown(yaml_path, out_path):
             desc = value.get("description", "")
             md_lines.append(f"| {key} | {dtype} | {desc} |")
 
-    # Always include error handling section
-    md_lines.append("## Error Handling\n")
-    md_lines.append("### Common Error Responses\n")
-    md_lines.append("| Status Code | Message | Description | Example |")
-    md_lines.append("|-------------|---------|-------------|---------|")
-    md_lines.append("| 400 | Bad Request | The request was invalid or cannot be processed. | Invalid search ID or parameters. |")
-    md_lines.append("| 401 | Unauthorized | Missing or incorrect authentication. | Invalid API token. |")
-    md_lines.append("| 403 | Forbidden | Access to the resource is denied. | No permissions for search. |")
-    md_lines.append("| 404 | Not Found | The requested item does not exist. | Search ID not found. |")
-    md_lines.append("| 500 | Internal Server Error | A server error occurred. | Unexpected failure in Splunk. |")
+    json_body = output.get("json_body", {}).get("properties", {})
+    messages = json_body.get("messages", {}).get("items", {}).get("properties", {})
+    if messages:
+        md_lines.append("## Error Handling\n")
+        md_lines.append("### Common Error Responses\n")
+        md_lines.append("| Status Code | Message | Description | Example |")
+        md_lines.append("|-------------|---------|-------------|---------|")
+        md_lines.append("| 400 | Bad Request | The request was invalid or cannot be processed. | Invalid search ID or parameters. |")
+        md_lines.append("| 401 | Unauthorized | Missing or incorrect authentication. | Invalid API token. |")
+        md_lines.append("| 403 | Forbidden | Access to the resource is denied. | No permissions for search. |")
+        md_lines.append("| 404 | Not Found | The requested item does not exist. | Search ID not found. |")
+        md_lines.append("| 500 | Internal Server Error | A server error occurred. | Unexpected failure in Splunk. |")
 
-    md_lines.append("\n### Error Example\n")
-    md_lines.append("```json")
-    md_lines.append("{")
-    md_lines.append("  \"messages\": [")
-    md_lines.append("    {")
-    md_lines.append("      \"type\": \"ERROR\",")
-    md_lines.append("      \"text\": \"Search ID not found.\"")
-    md_lines.append("    }")
-    md_lines.append("  ],")
-    md_lines.append("  \"status_code\": 404,")
-    md_lines.append("  \"reason\": \"Not Found\"")
-    md_lines.append("}")
-    md_lines.append("```")
+        md_lines.append("\n### Error Example\n")
+        md_lines.append("```json")
+        md_lines.append(json.dumps({
+            "messages": [
+                {"type": "ERROR", "text": "Search ID not found."}
+            ],
+            "status_code": 404,
+            "reason": "Not Found"
+        }, indent=2))
+        md_lines.append("```")
 
     safe_mkdir(out_path.parent)
     with open(out_path, "w", encoding="utf-8") as f:
