@@ -24,19 +24,16 @@ jobs:
       - name: Run conversion script
         run: python scripts/convert_docs.py
 
-      - name: Push to Techpubs Repo
+      - name: Push generated docs to techpubs-knowledgecenter
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-          git clone https://github.com/swimlane/techpubs-knowledgecenter.git temp-docs
-
-          mkdir -p temp-docs/docs/Connectors
-          cp -r output/docs/Connectors/* temp-docs/docs/Connectors/
-
+      
+          git clone https://x-access-token:${{ secrets.TECHPUBS_TOKEN }}@github.com/swimlane/techpubs-knowledgecenter.git temp-docs
+          rm -rf temp-docs/*
+          cp -r output/* temp-docs/
+      
           cd temp-docs
           git add .
           git commit -m "Automated doc update from tesing_rtd" || echo "Nothing to commit"
           git push origin main
-        env:
-          GITHUB_TOKEN: ${{ secrets.TECHPUBS_TOKEN }}
