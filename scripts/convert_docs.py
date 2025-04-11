@@ -33,37 +33,56 @@ def convert_yaml_to_markdown(yaml_path, out_path):
     inputs = data.get("inputs", {}).get("properties", {})
     required = data.get("inputs", {}).get("required", [])
     if inputs:
-        md_lines.append("## Inputs\n")
-        md_lines.append("| Name | Type | Description | Required |")
-        md_lines.append("|------|------|-------------|----------|")
-        for key, value in inputs.items():
-            dtype = value.get("type", "")
-            desc = value.get("description", "")
-            is_required = "Yes" if key in required else "No"
-            md_lines.append(f"| {key} | {dtype} | {desc} | {is_required} |")
+        has_description = any(inputs[key].get("description") for key in inputs)
+        if has_description:
+            md_lines.append("## Inputs\n")
+            md_lines.append("| Name | Type | Description | Required |")
+            md_lines.append("|------|------|-------------|----------|")
+            for key, value in inputs.items():
+                dtype = value.get("type", "")
+                desc = value.get("description", "")
+                is_required = "Yes" if key in required else "No"
+                md_lines.append(f"| {key} | {dtype} | {desc} | {is_required} |")
+        else:
+            md_lines.append("## Inputs\n")
+            md_lines.append("| Name | Type | Required |")
+            md_lines.append("|------|------|----------|")
+            for key, value in inputs.items():
+                dtype = value.get("type", "")
+                is_required = "Yes" if key in required else "No"
+                md_lines.append(f"| {key} | {dtype} | {is_required} |")
 
     md_lines.append("## Output\n")
 
     example = data.get("output", {}).get("examples") or data.get("output", {}).get("example")
-    if example:
+    if isinstance(example, dict) and len(example) > 0:
+        truncated_example = {k: example[k] for k in list(example)[:3]}
         md_lines.append("### Example\n")
         md_lines.append("```json")
-        md_lines.append(json.dumps(example, indent=2))
+        md_lines.append(json.dumps(truncated_example, indent=2))
         md_lines.append("```")
 
     output = data.get("output", {}).get("properties", {})
     if output:
-        filtered_keys = set()
         md_lines.append("### Output Parameters\n")
-        md_lines.append("| Name | Type | Description |")
-        md_lines.append("|------|------|-------------|")
-        for key, value in output.items():
-            if key in filtered_keys or key == "response_headers":
-                continue
-            dtype = value.get("type", "")
-            desc = value.get("description", "")
-            md_lines.append(f"| {key} | {dtype} | {desc} |")
-            filtered_keys.add(key)
+        has_description = any(output[key].get("description") for key in output if key != "response_headers")
+        if has_description:
+            md_lines.append("| Name | Type | Description |")
+            md_lines.append("|------|------|-------------|")
+            for key, value in output.items():
+                if key == "response_headers":
+                    continue
+                dtype = value.get("type", "")
+                desc = value.get("description", "")
+                md_lines.append(f"| {key} | {dtype} | {desc} |")
+        else:
+            md_lines.append("| Name | Type |")
+            md_lines.append("|------|------|")
+            for key, value in output.items():
+                if key == "response_headers":
+                    continue
+                dtype = value.get("type", "")
+                md_lines.append(f"| {key} | {dtype} |")
 
     headers = output.get("response_headers", {}).get("properties", {})
     if headers:
