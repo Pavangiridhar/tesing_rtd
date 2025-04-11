@@ -18,10 +18,12 @@ CONNECTOR_CATEGORIES = {
 all_actions = []
 all_configs = []
 
-
 def safe_mkdir(path):
     os.makedirs(path, exist_ok=True)
 
+def write_index_file(folder: Path, title: str):
+    with open(folder / "_index.md", "w", encoding="utf-8") as f:
+        f.write(f"# {title}\n")
 
 def convert_yaml_to_markdown(yaml_path, out_path):
     with open(yaml_path, "r", encoding="utf-8") as f:
@@ -119,7 +121,6 @@ def convert_yaml_to_markdown(yaml_path, out_path):
         f.write("\n".join(md_lines))
     print(f"[✔] Wrote: {out_path}")
 
-
 def process_connector(connector_dir):
     connector_name = Path(connector_dir).name
     print(f"🔧 Processing connector: {connector_name}")
@@ -150,6 +151,10 @@ def process_connector(connector_dir):
         convert_yaml_to_markdown(yml, out_md)
         all_configs.append((connector_name, yml.stem, out_md))
 
+    # Write _index.md files for Archbee nesting
+    write_index_file(out_root, f"{connector_name} Connector")
+    write_index_file(out_actions, "Actions")
+    write_index_file(out_configs, "Configurations")
 
 def generate_summary_md():
     print("📘 Generating summary.md")
@@ -186,7 +191,6 @@ def generate_summary_md():
         f.write("\n".join(lines))
     print(f"[✔] Wrote: {SUMMARY_FILE}")
 
-
 def generate_action_and_config_indexes():
     safe_mkdir(CONFIG_INDEX_FILE.parent)
 
@@ -200,14 +204,12 @@ def generate_action_and_config_indexes():
         for connector, name, path in sorted(all_configs):
             f.write(f"- [{connector}: {name}]({path.relative_to('output/docs')})\n")
 
-
 def main():
     for item in Path(".").iterdir():
         if item.is_dir() and (item / "connector").exists():
             process_connector(item)
     generate_summary_md()
     generate_action_and_config_indexes()
-
 
 if __name__ == "__main__":
     main()
