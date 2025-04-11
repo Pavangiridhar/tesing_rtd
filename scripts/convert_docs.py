@@ -15,14 +15,12 @@ def convert_yaml_to_markdown(yaml_path, out_path):
 
     md_lines = []
 
-    # Title and Description
     title = data.get("title", yaml_path.stem)
     description = data.get("description", "")
     md_lines.append(f"# {title}\n")
     if description:
         md_lines.append(f"**Description**: {description}\n")
 
-    # Endpoint
     endpoint = data.get("meta", {}).get("endpoint", "")
     method = data.get("meta", {}).get("method", "")
     if endpoint or method:
@@ -32,7 +30,6 @@ def convert_yaml_to_markdown(yaml_path, out_path):
         if method:
             md_lines.append(f"- **Method:** `{method}`")
 
-    # Inputs
     inputs = data.get("inputs", {}).get("properties", {})
     required = data.get("inputs", {}).get("required", [])
     if inputs:
@@ -45,10 +42,8 @@ def convert_yaml_to_markdown(yaml_path, out_path):
             is_required = "Yes" if key in required else "No"
             md_lines.append(f"| {key} | {dtype} | {desc} | {is_required} |")
 
-    # Output Section
     md_lines.append("## Output\n")
 
-    # Output Example
     example = data.get("output", {}).get("example")
     if example:
         md_lines.append("### Example\n")
@@ -56,7 +51,6 @@ def convert_yaml_to_markdown(yaml_path, out_path):
         md_lines.append(yaml.dump(example, default_flow_style=False))
         md_lines.append("```")
 
-    # Output Parameters
     output = data.get("output", {}).get("properties", {})
     if output:
         md_lines.append("### Output Parameters\n")
@@ -69,7 +63,6 @@ def convert_yaml_to_markdown(yaml_path, out_path):
             desc = value.get("description", "")
             md_lines.append(f"| {key} | {dtype} | {desc} |")
 
-    # Response Headers
     headers = output.get("response_headers", {}).get("properties", {})
     if headers:
         md_lines.append("## Response Headers\n")
@@ -80,7 +73,6 @@ def convert_yaml_to_markdown(yaml_path, out_path):
             desc = value.get("description", "")
             md_lines.append(f"| {key} | {dtype} | {desc} |")
 
-    # Error Handling
     json_body = output.get("json_body", {}).get("properties", {})
     messages = json_body.get("messages", {}).get("items", {}).get("properties", {})
     if messages:
@@ -97,18 +89,17 @@ def convert_yaml_to_markdown(yaml_path, out_path):
         md_lines.append("\n### Error Example\n")
         md_lines.append("```json")
         md_lines.append("{")
-        md_lines.append('  "messages": [')
-        md_lines.append('    {')
-        md_lines.append('      "type": "ERROR",')
-        md_lines.append('      "text": "Search ID not found."')
+        md_lines.append("  \"messages\": [")
+        md_lines.append("    {")
+        md_lines.append("      \"type\": \"ERROR\",")
+        md_lines.append("      \"text\": \"Search ID not found.\"")
         md_lines.append("    }")
         md_lines.append("  ],")
-        md_lines.append('  "status_code": 404,')
-        md_lines.append('  "reason": "Not Found"')
+        md_lines.append("  \"status_code\": 404,")
+        md_lines.append("  \"reason\": \"Not Found\"")
         md_lines.append("}")
         md_lines.append("```")
 
-    # Write output
     safe_mkdir(out_path.parent)
     with open(out_path, "w", encoding="utf-8") as f:
         f.write("\n".join(md_lines))
@@ -142,20 +133,23 @@ def process_connector(connector_dir):
 
 def generate_summary_md():
     print("📘 Generating summary.md")
-    safe_mkdir(OUTPUT_DIR)  # ensure the folder exists
-
     lines = ["# Connectors"]
-    for connector in sorted(OUTPUT_DIR.iterdir(), key=lambda x: x.name.lower()):
+    for connector in sorted(OUTPUT_DIR.iterdir()):
         if not connector.is_dir():
             continue
-
         lines.append(f"- [{connector.name}](Connectors/{connector.name}/overview.md)")
 
-        for section in ["Configurations", "Actions"]:
-            subdir = connector / section
-            if subdir.exists():
-                for md in sorted(subdir.glob("*.md"), key=lambda x: x.name.lower()):
-                    lines.append(f"  - [{section}: {md.stem}](Connectors/{connector.name}/{section}/{md.name})")
+        configs_dir = connector / "Configurations"
+        if configs_dir.exists():
+            lines.append(f"  - Configurations")
+            for file in sorted(configs_dir.glob("*.md")):
+                lines.append(f"    - [{file.stem}](Connectors/{connector.name}/Configurations/{file.name})")
+
+        actions_dir = connector / "Actions"
+        if actions_dir.exists():
+            lines.append(f"  - Actions")
+            for file in sorted(actions_dir.glob("*.md")):
+                lines.append(f"    - [{file.stem}](Connectors/{connector.name}/Actions/{file.name})")
 
     safe_mkdir(SUMMARY_FILE.parent)
     with open(SUMMARY_FILE, "w", encoding="utf-8") as f:
