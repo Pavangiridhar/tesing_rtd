@@ -1,94 +1,142 @@
-
 import os
 import yaml
+import shutil
 from pathlib import Path
 
 OUTPUT_DIR = Path("output/docs/Connectors")
 
+
 def safe_mkdir(path):
     os.makedirs(path, exist_ok=True)
 
-def format_markdown_table(headers, rows):
-    table = ["| " + " | ".join(headers) + " |"]
-    table.append("|" + "|".join(["-" * (len(h) + 2) for h in headers]) + "|")
-    for row in rows:
-        table.append("| " + " | ".join(row) + " |")
-    return "\n".join(table)
 
 def convert_yaml_to_markdown(yaml_path, out_path):
     with open(yaml_path, "r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
 
-    md = []
+    md_lines = []
 
     # Title and Description
     title = data.get("title", yaml_path.stem)
     description = data.get("description", "")
-    md.append(f"# {title}\n")
+    md_lines.append(f"# {title}\n")
     if description:
-        md.append(f"**Description**: {description}\n")
+        md_lines.append(f"**Description**: {description}\n")
 
     # Endpoint
-    method = data.get("meta", {}).get("method", "GET")
     endpoint = data.get("meta", {}).get("endpoint", "")
-    if endpoint:
-        md.append("## Endpoint")
-        md.append(f"- **Method**: `{method}`")
-        md.append(f"- **URL**: `{endpoint}`\n")
+    method = data.get("meta", {}).get("method", "")
+    if endpoint or method:
+        md_lines.append("## Endpoint\n")
+        if endpoint:
+            md_lines.append(f"- **URL:** `{endpoint}`")
+        if method:
+            md_lines.append(f"- **Method:** `{method}`")
 
     # Inputs
     inputs = data.get("inputs", {}).get("properties", {})
-    required_inputs = data.get("inputs", {}).get("required", [])
+    required = data.get("inputs", {}).get("required", [])
     if inputs:
-        md.append("## Inputs")
-        rows = []
-        for name, prop in inputs.items():
-            dtype = prop.get("type", "")
-            desc = prop.get("description", "")
-            req = "Yes" if name in required_inputs else "No"
-            rows.append([name, dtype, desc, req])
-        md.append(format_markdown_table(["Name", "Type", "Description", "Required"], rows))
+        md_lines.append("## Inputs\n")
+        md_lines.append("| Name | Type | Description | Required |")
+        md_lines.append("|------|------|-------------|----------|")
+        for key, value in inputs.items():
+            dtype = value.get("type", "")
+            desc = value.get("description", "")
+            is_required = "Yes" if key in required else "No"
+            md_lines.append(f"| {key} | {dtype} | {desc} | {is_required} |")
+
+    # Output
+    md_lines.append("## Output\n")
 
     # Output Example
-    example = data.get("output", {}).get("examples")
+    example = data.get("output", {}).get("example")
     if example:
-        md.append("\n## Output Example")
-        md.append("```json")
-        md.append(yaml.dump(example, default_flow_style=False))
-        md.append("```")
+        md_lines.append("### Example\n")
+        md_lines.append("```json")
+        md_lines.append(yaml.dump(example, default_flow_style=False))
+        md_lines.append("```")
 
     # Output Parameters
-    output_props = data.get("output", {}).get("properties", {})
-    if output_props:
-        md.append("\n## Output Parameters")
-        rows = []
-        for name, prop in output_props.items():
-            if name != "response_headers":
-                dtype = prop.get("type", "")
-                desc = prop.get("description", "")
-                rows.append([name, dtype, desc])
-        if rows:
-            md.append(format_markdown_table(["Name", "Type", "Description"], rows))
+    output = data.get("output", {}).get("properties", {})
+    if output:
+        md_lines.append("### Output Parameters\n")
+        md_lines.append("| Name | Type | Description |")
+        md_lines.append("|------|------|-------------|")
+        for key, value in output.items():
+            if key == "response_headers":
+                continue
+            dtype = value.get("type", "")
+            desc = value.get("description", "")
+            md_lines.append(f"| {key} | {dtype} | {desc} |")
 
     # Response Headers
-    headers = output_props.get("response_headers", {}).get("properties", {})
+    headers = output.get("response_headers", {}).get("properties", {})
     if headers:
-        md.append("\n## Response Headers")
-        rows = []
-        for name, prop in headers.items():
-            dtype = prop.get("type", "")
-            desc = prop.get("description", "")
-            rows.append([name, dtype, desc])
-        md.append(format_markdown_table(["Header", "Type", "Description"], rows))
+        md_lines.append("## Response Headers\n")
+        md_lines.append("| Header | Type | Description |")
+        md_lines.append("|--------|------|-------------|")
+        for key, value in headers.items():
+            dtype = value.get("type", "")
+            desc = value.get("description", "")
+            md_lines.append(f"| {key} | {dtype} | {desc} |")
 
     # Error Handling
-    messages = output_props.get("json_body", {}).get("properties", {}).get("messages", {})
+    json_body = output.get("json_body", {}).get("properties", {})
+    messages = json_body.get("messages", {}).get("items", {}).get("properties", {})
     if messages:
-        md.append("\n## Error Handling")
-        md.append("The response may include error messages under the `messages` field in the JSON body.")
+        md_lines.append("## Error Handling\n")
+        md_lines.append("### Common Error Responses\n")
+        md_lines.append("| Status Code | Message | Description | Example |")
+        md_lines.append("|-------------|---------|-------------|---------|")
+        md_lines.append("| 400 | Bad Request | The request was invalid or cannot be processed. | Invalid search ID or parameters. |")
+        md_lines.append("| 401 | Unauthorized | Missing or incorrect authentication. | Invalid API token. |")
+        md_lines.append("| 403 | Forbidden | Access to the resource is denied. | No permissions for search. |")
+        md_lines.append("| 404 | Not Found | The requested item does not exist. | Search ID not found. |")
+        md_lines.append("| 500 | Internal Server Error | A server error occurred. | Unexpected failure in Splunk. |")
 
-    # Write to file
+        md_lines.append("\n### Error Example\n")
+        md_lines.append("```json\n{\n  \"messages\": [\n    {\n      \"type\": \"ERROR\",\n      \"text\": \"Search ID not found.\"\n    }\n  ],\n  \"status_code\": 404,\n  \"reason\": \"Not Found\"\n}\n```")
+
+    # Write output
     safe_mkdir(out_path.parent)
     with open(out_path, "w", encoding="utf-8") as f:
-        f.write("\n".join(md))
+        f.write("\n".join(md_lines))
     print(f"[✔] Wrote: {out_path}")
+
+
+def process_connector(connector_dir):
+    connector_name = Path(connector_dir).name
+    print(f"🔧 Processing connector: {connector_name}")
+
+    out_root = OUTPUT_DIR / connector_name
+    overview_src = Path(connector_dir) / "docs" / "README.md"
+
+    if overview_src.exists():
+        safe_mkdir(out_root)
+        shutil.copy(overview_src, out_root / "overview.md")
+        print(f"[✔] Copied overview.md for {connector_name}")
+
+    actions_dir = Path(connector_dir) / "connector" / "config" / "actions"
+    configs_dir = Path(connector_dir) / "connector" / "config" / "assets"
+
+    out_actions = out_root / "Actions"
+    out_configs = out_root / "Configurations"
+    safe_mkdir(out_actions)
+    safe_mkdir(out_configs)
+
+    for yml in list(actions_dir.glob("*.yml")) + list(actions_dir.glob("*.yaml")):
+        convert_yaml_to_markdown(yml, out_actions / f"{yml.stem}.md")
+
+    for yml in list(configs_dir.glob("*.yml")) + list(configs_dir.glob("*.yaml")):
+        convert_yaml_to_markdown(yml, out_configs / f"{yml.stem}.md")
+
+
+def main():
+    for item in Path(".").iterdir():
+        if item.is_dir() and (item / "connector").exists():
+            process_connector(item)
+
+
+if __name__ == "__main__":
+    main()
