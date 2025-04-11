@@ -22,6 +22,7 @@ def safe_mkdir(path):
     os.makedirs(path, exist_ok=True)
 
 def write_index_file(folder: Path, title: str):
+    safe_mkdir(folder)
     with open(folder / "_index.md", "w", encoding="utf-8") as f:
         f.write(f"# {title}\n")
 
@@ -151,7 +152,6 @@ def process_connector(connector_dir):
         convert_yaml_to_markdown(yml, out_md)
         all_configs.append((connector_name, yml.stem, out_md))
 
-    # Write _index.md files for Archbee nesting
     write_index_file(out_root, f"{connector_name} Connector")
     write_index_file(out_actions, "Actions")
     write_index_file(out_configs, "Configurations")
