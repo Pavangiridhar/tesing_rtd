@@ -29,9 +29,9 @@ def convert_yaml_to_markdown(yaml_path, out_path):
     if endpoint or method:
         md_lines.append("## Endpoint\n")
         if endpoint:
-            md_lines.append(f"- **URL:** `{endpoint}`")
+            md_lines.append(f"- **URL:** {endpoint}")
         if method:
-            md_lines.append(f"- **Method:** `{method}`")
+            md_lines.append(f"- **Method:** {method}")
 
     # Inputs
     inputs = data.get("inputs", {}).get("properties", {})
@@ -53,9 +53,11 @@ def convert_yaml_to_markdown(yaml_path, out_path):
     example = data.get("output", {}).get("example")
     if example:
         md_lines.append("### Example\n")
-        md_lines.append("```json")
+        md_lines.append("
+json")
         md_lines.append(yaml.dump(example, default_flow_style=False))
-        md_lines.append("```")
+        md_lines.append("
+")
 
     # Output Parameters
     output = data.get("output", {}).get("properties", {})
@@ -96,7 +98,9 @@ def convert_yaml_to_markdown(yaml_path, out_path):
         md_lines.append("| 500 | Internal Server Error | A server error occurred. | Unexpected failure in Splunk. |")
 
         md_lines.append("\n### Error Example\n")
-        md_lines.append("```json\n{\n  \"messages\": [\n    {\n      \"type\": \"ERROR\",\n      \"text\": \"Search ID not found.\"\n    }\n  ],\n  \"status_code\": 404,\n  \"reason\": \"Not Found\"\n}\n```")
+        md_lines.append("
+json\n{\n  \"messages\": [\n    {\n      \"type\": \"ERROR\",\n      \"text\": \"Search ID not found.\"\n    }\n  ],\n  \"status_code\": 404,\n  \"reason\": \"Not Found\"\n}\n
+")
 
     # Write output
     safe_mkdir(out_path.parent)
