@@ -27,10 +27,10 @@ jobs:
         python .github/scripts/convert_docs.py
 
     - name: Push to Techpubs Repo
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.PUSH_TOKEN }}
-        repository: swimlane/techpubs-knowledgecenter
-        branch: main
-        directory: output
+  uses: ad-m/github-push-action@master
+  with:
+    branch: main
+    directory: docs
+    repository: swimlane/techpubs-knowledgecenter
+    github_token: ${{ secrets.TECHPUBS_TOKEN }}
         force: true
