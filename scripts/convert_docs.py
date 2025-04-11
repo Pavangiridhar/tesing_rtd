@@ -166,20 +166,20 @@ def generate_summary_md():
     for category, connectors in sorted(categorized.items()):
         lines.append(f"\n## {category}")
         for connector_name in sorted(connectors):
-            lines.append(f"### {connector_name}")
-            lines.append(f"- [Overview](Connectors/{connector_name}/overview.md)")
+            lines.append(f"- 📁 **{connector_name}**")
+            lines.append(f"  - [Overview](Connectors/{connector_name}/overview.md)")
 
             configs_dir = OUTPUT_DIR / connector_name / "Configurations"
             if configs_dir.exists():
-                lines.append("#### Configurations")
+                lines.append("  - **Configurations**")
                 for file in sorted(configs_dir.glob("*.md")):
-                    lines.append(f"- [{file.stem}](Connectors/{connector_name}/Configurations/{file.name})")
+                    lines.append(f"    - [{file.stem}](Connectors/{connector_name}/Configurations/{file.name})")
 
             actions_dir = OUTPUT_DIR / connector_name / "Actions"
             if actions_dir.exists():
-                lines.append("#### Actions")
+                lines.append("  - **Actions**")
                 for file in sorted(actions_dir.glob("*.md")):
-                    lines.append(f"- [{file.stem}](Connectors/{connector_name}/Actions/{file.name})")
+                    lines.append(f"    - [{file.stem}](Connectors/{connector_name}/Actions/{file.name})")
 
     safe_mkdir(SUMMARY_FILE.parent)
     with open(SUMMARY_FILE, "w", encoding="utf-8") as f:
