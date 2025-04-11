@@ -5,10 +5,8 @@ from pathlib import Path
 
 OUTPUT_DIR = Path("output/docs/Connectors")
 
-
 def safe_mkdir(path):
     os.makedirs(path, exist_ok=True)
-
 
 def convert_yaml_to_markdown(yaml_path, out_path):
     with open(yaml_path, "r", encoding="utf-8") as f:
@@ -29,9 +27,9 @@ def convert_yaml_to_markdown(yaml_path, out_path):
     if endpoint or method:
         md_lines.append("## Endpoint\n")
         if endpoint:
-            md_lines.append(f"- **URL:** {endpoint}")
+            md_lines.append(f"- **URL:** `{endpoint}`")
         if method:
-            md_lines.append(f"- **Method:** {method}")
+            md_lines.append(f"- **Method:** `{method}`")
 
     # Inputs
     inputs = data.get("inputs", {}).get("properties", {})
@@ -46,18 +44,16 @@ def convert_yaml_to_markdown(yaml_path, out_path):
             is_required = "Yes" if key in required else "No"
             md_lines.append(f"| {key} | {dtype} | {desc} | {is_required} |")
 
-    # Output
+    # Output Section
     md_lines.append("## Output\n")
 
     # Output Example
     example = data.get("output", {}).get("example")
     if example:
         md_lines.append("### Example\n")
-        md_lines.append("
-json")
+        md_lines.append("```json")
         md_lines.append(yaml.dump(example, default_flow_style=False))
-        md_lines.append("
-")
+        md_lines.append("```")
 
     # Output Parameters
     output = data.get("output", {}).get("properties", {})
@@ -98,16 +94,24 @@ json")
         md_lines.append("| 500 | Internal Server Error | A server error occurred. | Unexpected failure in Splunk. |")
 
         md_lines.append("\n### Error Example\n")
-        md_lines.append("
-json\n{\n  \"messages\": [\n    {\n      \"type\": \"ERROR\",\n      \"text\": \"Search ID not found.\"\n    }\n  ],\n  \"status_code\": 404,\n  \"reason\": \"Not Found\"\n}\n
-")
+        md_lines.append("```json")
+        md_lines.append("{")
+        md_lines.append('  "messages": [')
+        md_lines.append('    {')
+        md_lines.append('      "type": "ERROR",')
+        md_lines.append('      "text": "Search ID not found."')
+        md_lines.append("    }")
+        md_lines.append("  ],")
+        md_lines.append('  "status_code": 404,')
+        md_lines.append('  "reason": "Not Found"')
+        md_lines.append("}")
+        md_lines.append("```")
 
     # Write output
     safe_mkdir(out_path.parent)
     with open(out_path, "w", encoding="utf-8") as f:
         f.write("\n".join(md_lines))
     print(f"[✔] Wrote: {out_path}")
-
 
 def process_connector(connector_dir):
     connector_name = Path(connector_dir).name
@@ -135,12 +139,10 @@ def process_connector(connector_dir):
     for yml in list(configs_dir.glob("*.yml")) + list(configs_dir.glob("*.yaml")):
         convert_yaml_to_markdown(yml, out_configs / f"{yml.stem}.md")
 
-
 def main():
     for item in Path(".").iterdir():
         if item.is_dir() and (item / "connector").exists():
             process_connector(item)
-
 
 if __name__ == "__main__":
     main()
