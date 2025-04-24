@@ -1,4 +1,4 @@
-## Forti Analyzer Overview
+## Forti Analyzer Connector Overview
 
 Forti Analyzer is a network security analytics and reporting tool that provides deep insights into log data, helping organizations manage security events efficiently.
 
