@@ -5,7 +5,7 @@ import shutil
 from pathlib import Path
 
 OUTPUT_DIR = Path("output/docs/Connectors")
-SUMMARY_PATH = Path("output/docs/summary.md")
+
 
 def safe_mkdir(path):
     os.makedirs(path, exist_ok=True)
@@ -147,60 +147,35 @@ def process_connector(connector_dir):
     print(f"🔧 Processing connector: {connector_name}")
 
     out_root = OUTPUT_DIR / connector_name
-    safe_mkdir(out_root)
-
-    # 1. Copy overview.md FIRST
     overview_src = Path(connector_dir) / "docs" / "README.md"
-    overview_dest = out_root / "overview.md"
+
+    # Write overview as 00_overview.md so it's always first
     if overview_src.exists():
+        safe_mkdir(out_root)
+        overview_dest = out_root / "00_overview.md"
         shutil.copy(overview_src, overview_dest)
-        print(f"[✔] Copied overview.md for {connector_name}")
+        print(f"[✔] Copied 00_overview.md for {connector_name}")
 
-    # 2. Configurations folder
-    configs_dir = Path(connector_dir) / "connector" / "config" / "assets"
-    out_configs = out_root / "Configurations"
-    safe_mkdir(out_configs)
-    for yml in sorted(list(configs_dir.glob("*.yml")) + list(configs_dir.glob("*.yaml"))):
-        out_md = out_configs / f"{yml.stem}.md"
-        convert_yaml_to_markdown(yml, out_md)
-
-    # 3. Actions folder
     actions_dir = Path(connector_dir) / "connector" / "config" / "actions"
+    configs_dir = Path(connector_dir) / "connector" / "config" / "assets"
+
     out_actions = out_root / "Actions"
+    out_configs = out_root / "Configurations"
     safe_mkdir(out_actions)
+    safe_mkdir(out_configs)
+
     for yml in sorted(list(actions_dir.glob("*.yml")) + list(actions_dir.glob("*.yaml"))):
         out_md = out_actions / f"{yml.stem}.md"
         convert_yaml_to_markdown(yml, out_md)
 
-def generate_summary_md():
-    lines = ["# Connectors\n"]
-    for connector_dir in sorted(OUTPUT_DIR.iterdir()):
-        if not connector_dir.is_dir():
-            continue
-        name = connector_dir.name
-        overview = f"Connectors/{name}/overview.md"
-        lines.append(f"- [{name} Overview]({overview})")
-        configs = sorted((connector_dir / "Configurations").glob("*.md"))
-        actions = sorted((connector_dir / "Actions").glob("*.md"))
-        if configs:
-            lines.append("  - **Configurations**")
-            for config in configs:
-                lines.append(f"    - [{config.stem}]({config.as_posix()})")
-        if actions:
-            lines.append("  - **Actions**")
-            for action in actions:
-                lines.append(f"    - [{action.stem}]({action.as_posix()})")
-        lines.append("")  # Blank line between connectors
-    SUMMARY_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(SUMMARY_PATH, "w", encoding="utf-8") as f:
-        f.write("\n".join(lines))
-    print(f"[✔] Wrote summary.md at {SUMMARY_PATH}")
+    for yml in sorted(list(configs_dir.glob("*.yml")) + list(configs_dir.glob("*.yaml"))):
+        out_md = out_configs / f"{yml.stem}.md"
+        convert_yaml_to_markdown(yml, out_md)
 
 def main():
     for item in sorted(Path(".").iterdir()):
         if item.is_dir() and (item / "connector").exists():
             process_connector(item)
-    generate_summary_md()   # <--- Call AFTER all connectors are processed
-
+   
 if __name__ == "__main__":
     main()
