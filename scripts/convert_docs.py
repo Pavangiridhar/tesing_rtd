@@ -150,7 +150,7 @@ def process_connector(connector_dir):
     if changelog_src.exists():
         with open(changelog_src, "r", encoding="utf-8") as f:
             content = f.read()
-        updated = re.sub(r"^#\s+Changelog\b", "# Release Notes", content, count=1, flags=re.IGNORECASE | re.MULTILINE)
+        updated = re.sub(r"^#\s+# Change Log\b", "# Release Notes", content, count=1, flags=re.IGNORECASE | re.MULTILINE)
         with open(out_root / "release-notes.md", "w", encoding="utf-8") as f:
             f.write(updated)
         print(f"[✔] Copied changelog.md as release-notes.md for {connector_name}")
