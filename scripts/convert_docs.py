@@ -6,7 +6,7 @@ from pathlib import Path
 
 OUTPUT_DIR = Path("output/docs/Connectors")
 CHANGELOG_SRC = Path("docs/changelog.md")
-CHANGELOG_DEST = Path("output/docs/changelog.md")
+CHANGELOG_DEST = Path("output/docs/Connectors/release-notes.md")
 
 def safe_mkdir(path):
     os.makedirs(path, exist_ok=True)
@@ -170,7 +170,6 @@ def main():
         if item.is_dir() and (item / "connector").exists():
             process_connector(item)
 
-    # Handle changelog.md and rewrite heading
     if CHANGELOG_SRC.exists():
         with open(CHANGELOG_SRC, "r", encoding="utf-8") as f:
             content = f.read()
