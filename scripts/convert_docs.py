@@ -5,8 +5,6 @@ import shutil
 from pathlib import Path
 
 OUTPUT_DIR = Path("output/docs/Connectors")
-CHANGELOG_SRC = Path("docs/changelog.md")
-CHANGELOG_DEST = Path("output/docs/Connectors/release-notes.md")
 
 def safe_mkdir(path):
     os.makedirs(path, exist_ok=True)
@@ -140,12 +138,21 @@ def process_connector(connector_dir):
 
     out_root = OUTPUT_DIR / connector_name
     overview_src = Path(connector_dir) / "docs" / "README.md"
+    changelog_src = Path(connector_dir) / "docs" / "changelog.md"
 
     if overview_src.exists():
         safe_mkdir(out_root)
         overview_dest = out_root / "00_overview.md"
         shutil.copy(overview_src, overview_dest)
         print(f"[✔] Copied overview.md for {connector_name}")
+
+    if changelog_src.exists():
+        with open(changelog_src, "r", encoding="utf-8") as f:
+            content = f.read()
+        updated = content.replace("# Changelog", "# Release Notes", 1)
+        with open(out_root / "release-notes.md", "w", encoding="utf-8") as f:
+            f.write(updated)
+        print(f"[✔] Copied changelog.md as release-notes.md for {connector_name}")
 
     actions_dir = Path(connector_dir) / "connector" / "config" / "actions"
     configs_dir = Path(connector_dir) / "connector" / "config" / "assets"
@@ -169,17 +176,6 @@ def main():
     for item in sorted(Path(".").iterdir()):
         if item.is_dir() and (item / "connector").exists():
             process_connector(item)
-
-    if CHANGELOG_SRC.exists():
-        with open(CHANGELOG_SRC, "r", encoding="utf-8") as f:
-            content = f.read()
-
-        updated_content = content.replace("# Changelog", "# Release Notes", 1)
-
-        safe_mkdir(CHANGELOG_DEST.parent)
-        with open(CHANGELOG_DEST, "w", encoding="utf-8") as f:
-            f.write(updated_content)
-        print(f"[✔] Copied changelog.md as Release Notes to {CHANGELOG_DEST}")
 
 if __name__ == "__main__":
     main()
