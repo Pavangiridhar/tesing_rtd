@@ -138,7 +138,7 @@ def process_connector(connector_dir):
 
     out_root = OUTPUT_DIR / connector_name
     overview_src = Path(connector_dir) / "docs" / "README.md"
-    changelog_src = Path(connector_dir) / "docs" / "changelog.md"
+    changelog_src = Path(connector_dir) / "docs" / "CHANGELOG.md"
 
     if overview_src.exists():
         safe_mkdir(out_root)
